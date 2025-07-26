@@ -3,17 +3,27 @@
   "version": "0.0.1",
   "description": "Scroll-driven camera controller for Three.js",
   "main": "index.js",
+  "files": ["index.js"],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mainzcript/wirecam.js.git"
+    "url": "https://github.com/mainzcript/wirecam.js.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "keywords": [
+    "threejs",
+    "scroll",
+    "camera",
+    "animation",
+    "3d",
+    "scrollcam",
+    "dolly",
+    "cinematic"
+  ],
+  "author": "Marius Klein, Danny Staus",
+  "license": "MIT",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/mainzcript/wirecam.js/issues"
   },
