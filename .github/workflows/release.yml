@@ -40,9 +40,9 @@ jobs:
         run: pnpm install
 
       - name: Build wirecam package
-        run: pnpm --filter @mainzcript/wirecam build
+        run: pnpm --filter wirecam build
 
       - name: Publish to npm
-        run: pnpm --filter @mainzcript/wirecam publish --no-git-checks
+        run: pnpm --filter wirecam publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
