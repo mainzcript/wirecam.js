@@ -15,7 +15,7 @@
     "tsBuildInfoFile": "./node_modules/.cache/.tsbuildinfo"
   },
   "references": [
-    { "path": "./packages/wireframe" },
+    { "path": "./packages/wirecam" },
     { "path": "./examples/react" },
     { "path": "./examples/svelte" }
   ]
