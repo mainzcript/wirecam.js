@@ -1,31 +1,21 @@
 {
-  "name": "wirecam",
-  "version": "0.0.1",
-  "description": "Scroll-driven camera controller for Three.js",
-  "main": "index.js",
-  "files": ["index.js"],
+  "name": "wirecam-monorepo",
+  "private": true,
+  "workspaces": ["packages/*", "examples/*"],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "bootstrap": "pnpm install",
+    "build": "pnpm --recursive run build",
+    "lint": "pnpm --recursive run lint",
+    "test": "pnpm --recursive run test"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/mainzcript/wirecam.js.git"
-  },
-  "keywords": [
-    "threejs",
-    "scroll",
-    "camera",
-    "animation",
-    "3d",
-    "scrollcam",
-    "dolly",
-    "cinematic"
-  ],
-  "author": "Marius Klein, Danny Staus",
-  "license": "MIT",
-  "type": "module",
-  "bugs": {
-    "url": "https://github.com/mainzcript/wirecam.js/issues"
-  },
-  "homepage": "https://github.com/mainzcript/wirecam.js#readme"
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "tsup": "^6.0.0",
+    "eslint": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "prettier": "^2.0.0",
+    "vite": "^4.0.0",
+    "vitest": "^1.0.0"
+  }
 }

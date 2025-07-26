@@ -1,0 +1,26 @@
+{
+  "name": "wireframe",
+  "version": "0.0.2",
+  "description": "Scroll-driven camera controller for Three.js with advanced keyframe system",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup",
+    "clean": "rm -rf dist",
+    "lint": "eslint src/**/*.ts --fix",
+    "test": "vitest run --passWithNoTests"
+  },
+  "peerDependencies": {
+    "three": "^0.157.0"
+  },
+  "dependencies": {
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/uuid": "^9.0.0",
+    "@types/three": "^0.157.0"
+  },
+  "publishConfig": { "access": "public" }
+} 
