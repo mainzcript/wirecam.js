@@ -10,7 +10,7 @@
     "build": "tsup",
     "clean": "rm -rf dist",
     "lint": "eslint src/**/*.ts --fix",
-    "test": "vitest"
+    "test": "vitest run --passWithNoTests"
   },
   "peerDependencies": {
     "three": "^0.157.0"
