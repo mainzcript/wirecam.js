@@ -1,4 +1,4 @@
-# wiracam.js
+# wirecam.js
 
 An advanced scroll-driven camera controller for Three.js with an intelligent keyframe system.
 
