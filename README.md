@@ -1,4 +1,4 @@
-# Wireframe.js
+# wiracam.js
 
 An advanced scroll-driven camera controller for Three.js with an intelligent keyframe system.
 
@@ -15,17 +15,17 @@ An advanced scroll-driven camera controller for Three.js with an intelligent key
 ## Installation
 
 ```bash
-npm install wireframe
+npm install wirecam
 # or
-yarn add wireframe
+yarn add wirecam
 # or
-pnpm add wireframe
+pnpm add wirecam
 ```
 
 ## Quick Start
 
 ```typescript
-import { CameraController } from 'wireframe';
+import { CameraController } from 'wirecam';
 
 // Create container element
 const container = document.getElementById('camera-container');
@@ -59,7 +59,7 @@ controller.settings.debug = true;
 
 ## Concept
 
-Wireframe.js uses an intelligent system that links HTML elements with ideal camera positions:
+wirecam.js uses an intelligent system that links HTML elements with ideal camera positions:
 
 1. **HTML Elements as Reference** - Each keyframe is linked to an HTML element
 2. **Automatic Positioning** - The camera automatically positions itself to optimally show the element
@@ -177,7 +177,7 @@ This is a pnpm monorepo. To get started:
 pnpm install
 
 # Build core package
-pnpm --filter wireframe build
+pnpm --filter wirecam build
 
 # Linting
 pnpm lint
@@ -191,7 +191,7 @@ pnpm test
 ```
 wirecam.js/
 ├── packages/
-│   └── wireframe/          # Core package
+│   └── wirecam/          # Core package
 │       ├── src/
 │       │   ├── CameraController.ts    # Main class
 │       │   ├── types.ts               # TypeScript types
