@@ -227,11 +227,7 @@ Tracks the position and size of HTML elements in the viewport and calculates ROI
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on how to contribute, including how to fork, create a feature branch, and submit a Pull Request. If you change any code in `packages/`, you must add a changeset. All details for contributors are in that file.
 
 ## License
 
@@ -246,12 +242,12 @@ MIT License - see LICENSE file for details.
 
 This project uses [changesets](https://github.com/changesets/changesets) for versioning and release management in a pnpm monorepo.
 
-- All changes to packages require a changeset. See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
-- Prepare releases on the `develop` branch and merge into `main` via Pull Request.
-- Maintainers trigger releases manually via GitHub Actions (see [RELEASING.md](./RELEASING.md)).
+- All changes to packages require a changeset. See [CONTRIBUTING.md](./CONTRIBUTING.md) for details (for contributors).
+- Releases are managed by maintainers: changes are collected on the `develop` branch and merged into `main` via Pull Request.
+- Maintainers trigger releases manually via GitHub Actions (see [RELEASING.md](./RELEASING.md) for maintainers).
 - Snapshots are published automatically to npm with the `next` tag on every push to `main` (except release commits).
 
 For more information:
 
-- [RELEASING.md](./RELEASING.md) — Release workflow and best practices
-- [CONTRIBUTING.md](./CONTRIBUTING.md) — Contribution guidelines and changeset requirements
+- [RELEASING.md](./RELEASING.md) — Release workflow and best practices (for maintainers)
+- [CONTRIBUTING.md](./CONTRIBUTING.md) — Contribution guidelines and changeset requirements (for contributors)
