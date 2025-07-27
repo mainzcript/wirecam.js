@@ -241,3 +241,17 @@ MIT License - see LICENSE file for details.
 
 - Marius Klein
 - Danny Staus
+
+## Release & Versioning
+
+This project uses [changesets](https://github.com/changesets/changesets) for versioning and release management in a monorepo setup.
+
+- All changes to packages require a changeset. See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
+- Releases are prepared on the `develop` branch and merged into `main` via Pull Request.
+- Maintainers trigger releases manually via GitHub Actions (see [RELEASING.md](./RELEASING.md)).
+- Snapshots are published automatically to npm with the `next` tag on every push to `main` (except release commits).
+
+For more information, see:
+
+- [RELEASING.md](./RELEASING.md) — Release workflow and best practices
+- [CONTRIBUTING.md](./CONTRIBUTING.md) — Contribution guidelines and changeset requirements
