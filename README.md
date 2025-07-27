@@ -25,7 +25,7 @@ pnpm add wirecam
 ## Quick Start
 
 ```typescript
-import { Wirecam } from 'wirecam';
+import { Wirecam, Inspector } from 'wirecam';
 
 // Create container element
 const container = document.getElementById('camera-container');
@@ -94,6 +94,23 @@ new Wirecam(container: HTMLElement, autoStart?: boolean)
 - `registerUpdateCallback(fn: () => void): string` - Register an update callback
 - `unregisterUpdateCallback(id: string): void` - Remove an update callback
 
+### Inspector
+
+Development tool for debugging and monitoring.
+
+#### Constructor
+
+```typescript
+new Inspector(document: Document, wirecam: Wirecam, debug?: boolean)
+```
+
+#### Methods
+
+- `showGuiControls(): void` - Show the GUI controls panel
+- `hideGuiControls(): void` - Hide the GUI controls panel
+- `dispose(): void` - Clean up the inspector
+- `setDebug(debug: boolean): void` - Set debug mode
+
 ### Keyframe Interface
 
 ```typescript
@@ -150,6 +167,36 @@ controller.settings.debug = true;
 // - Green highlighting of active HTML elements
 ```
 
+### Inspector (Development Tool)
+
+The Inspector provides a GUI for development and debugging:
+
+```typescript
+import { Wirecam, Inspector } from 'wirecam';
+
+// Create Wirecam instance
+const controller = new Wirecam(container);
+
+// Create Inspector for development tools
+const inspector = new Inspector(document, controller, true);
+
+// Show GUI controls (FPS, camera info, position helper)
+inspector.showGuiControls();
+
+// Hide GUI controls
+inspector.hideGuiControls();
+
+// Clean up when done
+inspector.dispose();
+```
+
+The Inspector provides:
+
+- **FPS Monitor** - Real-time performance statistics
+- **Debug Toggle** - Enable/disable debug mode
+- **Camera Information** - Live position and FOV data
+- **Position Helper** - Click anywhere to get 3D coordinates for placing objects
+
 ## HTML Structure
 
 ```html
@@ -197,9 +244,7 @@ wirecam.js/
 │       │   ├── types.ts               # TypeScript types
 │       │   ├── utils/                 # Utility functions
 │       │   │   ├── PositionSpy.ts     # Element position tracking
-│       │   │   ├── math.ts            # Mathematical utilities
-│       │   │   ├── setObjectOpacity.ts # Opacity utilities
-│       │   │   └── logDebug.ts        # Debug logging
+│       │   │   └── ...                # More utility functions
 │       │   └── index.ts               # Exports
 │       ├── package.json
 │       └── tsup.config.ts

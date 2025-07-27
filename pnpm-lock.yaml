@@ -39,13 +39,22 @@ importers:
 
   packages/wirecam:
     dependencies:
+      stats.js:
+        specifier: ^0.17.0
+        version: 0.17.0
       three:
         specifier: ^0.157.0
         version: 0.157.0
+      tweakpane:
+        specifier: ^3.1.10
+        version: 3.1.10
       uuid:
         specifier: ^9.0.0
         version: 9.0.1
     devDependencies:
+      '@types/stats.js':
+        specifier: ^0.17.4
+        version: 0.17.4
       '@types/three':
         specifier: ^0.157.0
         version: 0.157.2
@@ -1632,6 +1641,9 @@ packages:
   stackback@0.0.2:
     resolution: {integrity: sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==}
 
+  stats.js@0.17.0:
+    resolution: {integrity: sha512-hNKz8phvYLPEcRkeG1rsGmV5ChMjKDAWU7/OJJdDErPBNChQXxCo3WZurGpnWc6gZhAzEPFad1aVgyOANH1sMw==}
+
   std-env@3.9.0:
     resolution: {integrity: sha512-UGvjygr6F6tpH7o2qyqR6QYpwraIjKSdtzyBdyytFOHmPZY917kwdwLG0RbOjWOnKmnm3PeHjaoLLMie7kPLQw==}
 
@@ -1746,6 +1758,9 @@ packages:
         optional: true
       typescript:
         optional: true
+
+  tweakpane@3.1.10:
+    resolution: {integrity: sha512-rqwnl/pUa7+inhI2E9ayGTqqP0EPOOn/wVvSWjZsRbZUItzNShny7pzwL3hVlaN4m9t/aZhsP0aFQ9U5VVR2VQ==}
 
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
@@ -3423,6 +3438,8 @@ snapshots:
 
   stackback@0.0.2: {}
 
+  stats.js@0.17.0: {}
+
   std-env@3.9.0: {}
 
   string-width@4.2.3:
@@ -3533,6 +3550,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
       - ts-node
+
+  tweakpane@3.1.10: {}
 
   type-check@0.4.0:
     dependencies:

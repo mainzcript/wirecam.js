@@ -5,7 +5,9 @@
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "clean": "rm -rf dist",
@@ -16,11 +18,16 @@
     "three": "^0.157.0"
   },
   "dependencies": {
+    "stats.js": "^0.17.0",
+    "tweakpane": "^3.1.10",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@types/uuid": "^9.0.0",
-    "@types/three": "^0.157.0"
+    "@types/stats.js": "^0.17.4",
+    "@types/three": "^0.157.0",
+    "@types/uuid": "^9.0.0"
   },
-  "publishConfig": { "access": "public" }
-} 
+  "publishConfig": {
+    "access": "public"
+  }
+}
