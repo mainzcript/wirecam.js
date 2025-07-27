@@ -244,14 +244,14 @@ MIT License - see LICENSE file for details.
 
 ## Release & Versioning
 
-This project uses [changesets](https://github.com/changesets/changesets) for versioning and release management in a monorepo setup.
+This project uses [changesets](https://github.com/changesets/changesets) for versioning and release management in a pnpm monorepo.
 
 - All changes to packages require a changeset. See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
-- Releases are prepared on the `develop` branch and merged into `main` via Pull Request.
+- Prepare releases on the `develop` branch and merge into `main` via Pull Request.
 - Maintainers trigger releases manually via GitHub Actions (see [RELEASING.md](./RELEASING.md)).
 - Snapshots are published automatically to npm with the `next` tag on every push to `main` (except release commits).
 
-For more information, see:
+For more information:
 
 - [RELEASING.md](./RELEASING.md) — Release workflow and best practices
 - [CONTRIBUTING.md](./CONTRIBUTING.md) — Contribution guidelines and changeset requirements
