@@ -25,13 +25,13 @@ pnpm add wirecam
 ## Quick Start
 
 ```typescript
-import { CameraController } from 'wirecam';
+import { Wirecam } from 'wirecam';
 
 // Create container element
 const container = document.getElementById('camera-container');
 
-// Initialize CameraController
-const controller = new CameraController(container);
+// Initialize Wirecam
+const controller = new Wirecam(container);
 
 // Add keyframes - link HTML elements with camera positions
 const keyframeId1 = controller.addKeyframe({
@@ -68,14 +68,14 @@ wirecam.js uses an intelligent system that links HTML elements with ideal camera
 
 ## API Reference
 
-### CameraController
+### Wirecam
 
 The main class for camera control.
 
 #### Constructor
 
 ```typescript
-new CameraController(container: HTMLElement, autoStart?: boolean)
+new Wirecam(container: HTMLElement, autoStart?: boolean)
 ```
 
 #### Properties
@@ -193,7 +193,7 @@ wirecam.js/
 ├── packages/
 │   └── wirecam/          # Core package
 │       ├── src/
-│       │   ├── CameraController.ts    # Main class
+│       │   ├── Wirecam.ts    # Main class
 │       │   ├── types.ts               # TypeScript types
 │       │   ├── utils/                 # Utility functions
 │       │   │   ├── PositionSpy.ts     # Element position tracking

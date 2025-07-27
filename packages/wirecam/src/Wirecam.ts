@@ -7,7 +7,7 @@ import PositionSpy, { type ROI } from './utils/PositionSpy';
 import { radToDeg } from 'three/src/math/MathUtils.js';
 import { v4 as uuidv4 } from 'uuid';
 
-type ControllerKeyframe = LiveKeyframe & {
+type WirecamKeyframe = LiveKeyframe & {
   posSpy: PositionSpy;
   refOffset: {
     x: number;
@@ -22,11 +22,11 @@ type ControllerKeyframe = LiveKeyframe & {
   lookAtIndicator: THREE.Mesh;
 };
 
-type CameraControllerSettings = {
+type WirecamSettings = {
   debug: boolean;
 };
 
-type CameraControllerDefaults = {
+type WirecamDefaults = {
   keyframe: LinkedKeyframe;
 };
 
@@ -37,11 +37,11 @@ type CameraControllerDefaults = {
  * based on the defined keyframes. It enables adding,
  * removing, and updating keyframes that control the camera movement.
  */
-export class CameraController {
-  public settings: CameraControllerSettings = {
+export class Wirecam {
+  public settings: WirecamSettings = {
     debug: false,
   };
-  public defaults: CameraControllerDefaults = {
+  public defaults: WirecamDefaults = {
     keyframe: {
       ref: document.body,
       cameraPos: new THREE.Vector3(0, 0, 0),
@@ -65,10 +65,10 @@ export class CameraController {
     visibleRatio: 0,
     screenRatio: 0,
   };
-  private keyframes: { [id: string]: ControllerKeyframe } = {};
+  private keyframes: { [id: string]: WirecamKeyframe } = {};
   private currentKeyframes: {
-    prev: ControllerKeyframe;
-    next: ControllerKeyframe;
+    prev: WirecamKeyframe;
+    next: WirecamKeyframe;
     blendFactor: number;
   } | null = null;
   private running = false;
@@ -103,7 +103,7 @@ export class CameraController {
       this.start();
     }
 
-    this.logDebug('CameraController', 'Initialized');
+    this.logDebug('Wirecam', 'Initialized');
   }
 
   /**
@@ -169,9 +169,9 @@ export class CameraController {
       fov: 0,
       worldTargetPosIndicator: sphere,
       lookAtIndicator: indicator,
-    } as ControllerKeyframe;
+    } as WirecamKeyframe;
 
-    this.logDebug('CameraController', 'Keyframe added', id);
+    this.logDebug('Wirecam', 'Keyframe added', id);
 
     return id;
   }
@@ -183,21 +183,21 @@ export class CameraController {
       this.scene.remove(kf.lookAtIndicator);
       kf.posSpy.dispose();
       delete this.keyframes[id];
-      this.logDebug('CameraController', 'Keyframe removed', id);
+      this.logDebug('Wirecam', 'Keyframe removed', id);
     } else {
-      console.warn('CameraController', 'Keyframe not found', id);
+      console.warn('Wirecam', 'Keyframe not found', id);
     }
   }
 
   start() {
     this.running = true;
     this.loop();
-    this.logDebug('CameraController', 'Started');
+    this.logDebug('Wirecam', 'Started');
   }
 
   stop() {
     this.running = false;
-    this.logDebug('CameraController', 'Stopped');
+    this.logDebug('Wirecam', 'Stopped');
   }
 
   private loop = () => {
@@ -221,7 +221,7 @@ export class CameraController {
     this.scene.clear();
 
     // 4. Log if debug is enabled
-    this.logDebug('CameraController', 'Reset');
+    this.logDebug('Wirecam', 'Reset');
   }
 
   public dispose() {
@@ -230,7 +230,7 @@ export class CameraController {
     document.body.removeChild(this.refIndicator);
     this.renderer.dispose();
 
-    this.logDebug('CameraController', 'Unmounted');
+    this.logDebug('Wirecam', 'Unmounted');
   }
 
   private update(): void {
@@ -294,8 +294,8 @@ export class CameraController {
     });
 
     // 4. Determine current keyframes
-    let prevKeyframe: ControllerKeyframe = sortedKeyframes[0];
-    let nextKeyframe: ControllerKeyframe | null = null;
+    let prevKeyframe: WirecamKeyframe = sortedKeyframes[0];
+    let nextKeyframe: WirecamKeyframe | null = null;
     sortedKeyframes.forEach((keyframe) => {
       if (
         keyframe.refOffset.y <= 0 &&
@@ -317,7 +317,7 @@ export class CameraController {
       nextKeyframe = prevKeyframe;
     }
     if (prevKeyframe.refOffset.y !== nextKeyframe.refOffset.y) {
-      nextKeyframe = nextKeyframe as ControllerKeyframe;
+      nextKeyframe = nextKeyframe as WirecamKeyframe;
       const total =
         Math.abs(prevKeyframe.refOffset.y) + Math.abs(nextKeyframe.refOffset.y);
       const tRaw = Math.abs(prevKeyframe.refOffset.y) / total;
@@ -537,14 +537,14 @@ export class CameraController {
     if (!id) return;
     if (this.updateCallbacks[id]) {
       delete this.updateCallbacks[id];
-      this.logDebug('CameraController', 'Update callback unregistered', id);
+      this.logDebug('Wirecam', 'Update callback unregistered', id);
     } else {
-      console.warn('CameraController', 'Update callback not found', id);
+      console.warn('Wirecam', 'Update callback not found', id);
     }
   }
 
   private logDebug(...msg: Parameters<typeof console.log>): void {
-    logDebug(this.settings.debug, 'CameraController', ...msg);
+    logDebug(this.settings.debug, 'Wirecam', ...msg);
   }
 
   private render() {
