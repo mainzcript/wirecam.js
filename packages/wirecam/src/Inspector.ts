@@ -78,62 +78,68 @@ export class Inspector {
       cameraPosY: 0,
       cameraPosZ: 0,
       fov: 0,
-      // TODO: Correction radius
       clickPosX: 0,
       clickPosY: 0,
       clickPosZ: 0,
     };
 
-    const debugBinding = (this.pane as any).addBinding(
-      this.paneParams,
-      'debug',
-      {
-        label: 'Debug Mode',
-      }
-    );
-    debugBinding.on('change', (e: { value: boolean }) => {
+    // Create the pane structure using v4 API
+    this.createPaneContent();
+  }
+
+  private createPaneContent(): void {
+    if (!this.pane || !this.paneParams) return;
+
+    // Debug toggle
+    const debugInput = (this.pane as any).addInput(this.paneParams, 'debug', {
+      label: 'Debug Mode',
+    });
+    debugInput.on('change', (e: { value: boolean }) => {
       this.setDebug(e.value);
     });
 
+    // Close button
     const hideButton = (this.pane as any).addButton({
       title: 'Close GUI Controls',
     });
     hideButton.on('click', () => this.hideGuiControls());
 
+    // Camera information folder
     const cameraPosFolder = (this.pane as any).addFolder({
       title: 'Camera',
       expanded: true,
     });
-    cameraPosFolder.addBinding(this.paneParams, 'cameraPosX', {
+    cameraPosFolder.addInput(this.paneParams, 'cameraPosX', {
       readonly: true,
       label: 'X',
     });
-    cameraPosFolder.addBinding(this.paneParams, 'cameraPosY', {
+    cameraPosFolder.addInput(this.paneParams, 'cameraPosY', {
       readonly: true,
       label: 'Y',
     });
-    cameraPosFolder.addBinding(this.paneParams, 'cameraPosZ', {
+    cameraPosFolder.addInput(this.paneParams, 'cameraPosZ', {
       readonly: true,
       label: 'Z',
     });
-    cameraPosFolder.addBinding(this.paneParams, 'fov', {
+    cameraPosFolder.addInput(this.paneParams, 'fov', {
       readonly: true,
       label: 'FOV',
     });
 
+    // Position helper folder
     const clickPosFolder = (this.pane as any).addFolder({
       title: 'Position Helper (last click)',
       expanded: true,
     });
-    clickPosFolder.addBinding(this.paneParams, 'clickPosX', {
+    clickPosFolder.addInput(this.paneParams, 'clickPosX', {
       readonly: true,
       label: 'X',
     });
-    clickPosFolder.addBinding(this.paneParams, 'clickPosY', {
+    clickPosFolder.addInput(this.paneParams, 'clickPosY', {
       readonly: true,
       label: 'Y',
     });
-    clickPosFolder.addBinding(this.paneParams, 'clickPosZ', {
+    clickPosFolder.addInput(this.paneParams, 'clickPosZ', {
       readonly: true,
       label: 'Z',
     });

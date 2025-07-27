@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "stats.js": "^0.17.0",
-    "tweakpane": "^3.1.10",
+    "tweakpane": "^4.0.5",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
