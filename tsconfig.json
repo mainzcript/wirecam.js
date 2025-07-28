@@ -16,7 +16,6 @@
   },
   "references": [
     { "path": "./packages/wirecam" },
-    { "path": "./examples/react" },
     { "path": "./examples/svelte" }
   ]
 } 
