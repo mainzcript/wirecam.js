@@ -5,7 +5,7 @@ import { ease, lerp } from './utils/math';
 import { logDebug } from './utils/logDebug';
 import PositionSpy, { type ROI } from './utils/PositionSpy';
 import { radToDeg } from 'three/src/math/MathUtils.js';
-import { v4 as uuidv4 } from 'uuid';
+import { generateUUID } from './utils/uuid';
 
 type WirecamKeyframe = LiveKeyframe & {
   posSpy: PositionSpy;
@@ -28,6 +28,15 @@ type WirecamSettings = {
 
 type WirecamDefaults = {
   keyframe: LinkedKeyframe;
+};
+
+type WirecamOptions = {
+  container?: HTMLElement;
+  renderer?: THREE.WebGLRenderer;
+  scene?: THREE.Scene;
+  camera?: THREE.PerspectiveCamera;
+  autoStart?: boolean;
+  debug?: boolean;
 };
 
 /**
@@ -73,18 +82,66 @@ export class Wirecam {
   } | null = null;
   private running = false;
   private updateCallbacks: { [id: string]: () => void } = {};
+  private ownsRenderer: boolean = false;
+  private ownsScene: boolean = false;
+  private ownsCamera: boolean = false;
 
-  constructor(container: HTMLElement, autoStart: boolean = true) {
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setClearColor(0x000000, 0);
-    container.appendChild(renderer.domElement);
+  constructor(options: WirecamOptions = {}) {
+    const {
+      container,
+      renderer,
+      scene,
+      camera,
+      autoStart = true,
+      debug = false,
+    } = options;
 
-    this.renderer = renderer;
+    // Update settings
+    this.settings.debug = debug;
 
-    this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-    this.viewportPosSpy = new PositionSpy(container);
+    // Handle renderer
+    if (renderer) {
+      this.renderer = renderer;
+      this.ownsRenderer = false;
+    } else {
+      if (!container) {
+        throw new Error(
+          'Wirecam: Either renderer or container must be provided'
+        );
+      }
+      this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      this.renderer.setClearColor(0x000000, 0);
+      container.appendChild(this.renderer.domElement);
+      this.ownsRenderer = true;
+    }
 
+    // Handle scene
+    if (scene) {
+      this.scene = scene;
+      this.ownsScene = false;
+    } else {
+      this.scene = new THREE.Scene();
+      this.ownsScene = true;
+    }
+
+    // Handle camera
+    if (camera) {
+      this.camera = camera;
+      this.ownsCamera = false;
+    } else {
+      this.camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+      this.ownsCamera = true;
+    }
+
+    // Setup viewport spy
+    const viewportContainer =
+      container || this.renderer.domElement.parentElement;
+    if (!viewportContainer) {
+      throw new Error('Wirecam: Cannot determine viewport container');
+    }
+    this.viewportPosSpy = new PositionSpy(viewportContainer);
+
+    // Create reference indicator
     const refIndicator = document.createElement('div');
     Object.assign(refIndicator.style, {
       position: 'fixed',
@@ -129,7 +186,7 @@ export class Wirecam {
     keyframe.ref = keyframe.ref as HTMLElement;
 
     // 2. Generate a unique ID for the keyframe
-    const id = uuidv4();
+    const id = generateUUID();
 
     // 3. Create yellow sphere
     const sphereGeometry = new THREE.SphereGeometry(
@@ -228,7 +285,11 @@ export class Wirecam {
     this.stop();
     this.clear();
     document.body.removeChild(this.refIndicator);
-    this.renderer.dispose();
+
+    // Only dispose resources that Wirecam owns
+    if (this.ownsRenderer) {
+      this.renderer.dispose();
+    }
 
     this.logDebug('Wirecam', 'Unmounted');
   }
@@ -524,7 +585,7 @@ export class Wirecam {
    * @return ID of the callback that can be used for later unregistration
    */
   public registerUpdateCallback(fn: () => void): string {
-    const id = uuidv4();
+    const id = generateUUID();
     this.updateCallbacks[id] = fn;
     return id;
   }
@@ -548,6 +609,9 @@ export class Wirecam {
   }
 
   private render() {
-    this.renderer.render(this.scene, this.camera);
+    // Only render if Wirecam owns the renderer
+    if (this.ownsRenderer) {
+      this.renderer.render(this.scene, this.camera);
+    }
   }
 }

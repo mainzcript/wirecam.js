@@ -48,9 +48,9 @@ importers:
       three:
         specifier: ^0.178.0
         version: 0.178.0
-      threlte:
-        specifier: ^3.13.1
-        version: 3.13.1(three@0.178.0)
+      wirecam:
+        specifier: workspace:*
+        version: link:../../packages/wirecam
     devDependencies:
       '@eslint/compat':
         specifier: ^1.2.5
@@ -145,9 +145,6 @@ importers:
       tweakpane:
         specifier: ^4.0.5
         version: 4.0.5
-      uuid:
-        specifier: ^9.0.0
-        version: 9.0.1
     devDependencies:
       '@types/stats.js':
         specifier: ^0.17.4
@@ -155,9 +152,6 @@ importers:
       '@types/three':
         specifier: ^0.157.0
         version: 0.157.2
-      '@types/uuid':
-        specifier: ^9.0.0
-        version: 9.0.8
 
 packages:
 
@@ -1053,9 +1047,6 @@ packages:
   '@types/three@0.157.2':
     resolution: {integrity: sha512-2kykrMgvO5LTAiahadM6ijoER+GcbEJ61pQVOyGxIJTCASoUnzwJvfhilsLxvEw4+glzhLYUDvvTvNjx+58Vzw==}
 
-  '@types/uuid@9.0.8':
-    resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
-
   '@types/webxr@0.5.22':
     resolution: {integrity: sha512-Vr6Stjv5jPRqH690f5I5GLjVk8GSsoQSYJ2FVd/3jJF7KaqfwPi3ehfBS96mlQ2kPCwZaX6U0rG2+NGHBKkA/A==}
 
@@ -1269,9 +1260,6 @@ packages:
   better-path-resolve@1.0.0:
     resolution: {integrity: sha512-pbnl5XzGBdrFU/wT4jqmJVPn2B6UHPBOhzMQkY/SPUPB6QtUXtmBHBIwCbXJol93mOpGMnQyP/+BB19q04xj7g==}
     engines: {node: '>=4'}
-
-  bidi-js@1.0.3:
-    resolution: {integrity: sha512-RKshQI1R3YQ+n9YJz2QQ147P66ELpa1FQEg20Dk8oW9t2KgLbpDLLp9aGZ7y8WHSshDknG0bknqGw5/tyCs5tw==}
 
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
@@ -2282,10 +2270,6 @@ packages:
     resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
     engines: {node: '>= 14.18.0'}
 
-  require-from-string@2.0.2:
-    resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
-    engines: {node: '>=0.10.0'}
-
   resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
     engines: {node: '>=4'}
@@ -2488,10 +2472,6 @@ packages:
   three@0.178.0:
     resolution: {integrity: sha512-ybFIB0+x8mz0wnZgSGy2MO/WCO6xZhQSZnmfytSPyNpM0sBafGRVhdaj+erYh5U+RhQOAg/eXqw5uVDiM2BjhQ==}
 
-  threlte@3.13.1:
-    resolution: {integrity: sha512-9Yfw3qHfHA8O9p28oBnPFFlnBVYaqoxx78bzC5xAbDmwuUJhdBRhuzPY2ZEdjrOXk+15TIIYaKr84MoGtwgnMw==}
-    deprecated: threlte is now available as @threlte/core and @threlte/extras
-
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
 
@@ -2525,19 +2505,6 @@ packages:
   tree-kill@1.2.2:
     resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
     hasBin: true
-
-  troika-three-text@0.46.4:
-    resolution: {integrity: sha512-Qsv0HhUKTZgSmAJs5wvO7YlBoJSP9TGPLmrg+K9pbQq4lseQdcevbno/WI38bwJBZ/qS56hvfqEzY0zUEFzDIw==}
-    peerDependencies:
-      three: '>=0.103.0'
-
-  troika-three-utils@0.46.0:
-    resolution: {integrity: sha512-llHyrXAcwzr0bpg80GxsIp73N7FuImm4WCrKDJkAqcAsWmE5pfP9+Qzw+oMWK1P/AdHQ79eOrOl9NjyW4aOw0w==}
-    peerDependencies:
-      three: '>=0.103.0'
-
-  troika-worker-utils@0.46.0:
-    resolution: {integrity: sha512-bzOx5f2ZBxkFhXtIvDJlLn2AI3bzCkGVbCndl/2dL5QZrwHEKl45OEIilCxYQQWJG1rEbOD9O80tMjoYjw19OA==}
 
   ts-api-utils@1.4.3:
     resolution: {integrity: sha512-i3eMG77UTMD0hZhgRS562pv83RC6ukSAC2GMNWc+9dieh/+jDM5u5YG+NHX6VNDRHQcHwmsTHctP9LhbC3WxVw==}
@@ -2615,10 +2582,6 @@ packages:
 
   uuid@11.1.0:
     resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
-    hasBin: true
-
-  uuid@9.0.1:
-    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
 
   vite-node@1.6.1:
@@ -2734,9 +2697,6 @@ packages:
         optional: true
       jsdom:
         optional: true
-
-  webgl-sdf-generator@1.1.1:
-    resolution: {integrity: sha512-9Z0JcMTFxeE+b2x1LJTdnaT8rT8aEp7MVxkNwoycNmJWwPdzoXzMh0BjJSh/AEFP+KPYZUli814h8bJZFIZ2jA==}
 
   webidl-conversions@4.0.2:
     resolution: {integrity: sha512-YQ+BmxuTgd6UXZW3+ICGfyqRyHXVlD5GtQr5+qjiNW7bF0cqrzX500HVXPBOvgXb5YnzDd+h0zqyv61KUD7+Sg==}
@@ -3531,8 +3491,6 @@ snapshots:
       fflate: 0.6.10
       meshoptimizer: 0.18.1
 
-  '@types/uuid@9.0.8': {}
-
   '@types/webxr@0.5.22': {}
 
   '@typescript-eslint/eslint-plugin@6.21.0(@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1)(typescript@5.8.3)':
@@ -3802,10 +3760,6 @@ snapshots:
   better-path-resolve@1.0.0:
     dependencies:
       is-windows: 1.0.2
-
-  bidi-js@1.0.3:
-    dependencies:
-      require-from-string: 2.0.2
 
   binary-extensions@2.3.0: {}
 
@@ -4786,8 +4740,6 @@ snapshots:
 
   readdirp@4.1.2: {}
 
-  require-from-string@2.0.2: {}
-
   resolve-from@4.0.0: {}
 
   resolve-from@5.0.0: {}
@@ -5005,12 +4957,6 @@ snapshots:
 
   three@0.178.0: {}
 
-  threlte@3.13.1(three@0.178.0):
-    dependencies:
-      troika-three-text: 0.46.4(three@0.178.0)
-    transitivePeerDependencies:
-      - three
-
   tinybench@2.9.0: {}
 
   tinyglobby@0.2.14:
@@ -5037,20 +4983,6 @@ snapshots:
       punycode: 2.3.1
 
   tree-kill@1.2.2: {}
-
-  troika-three-text@0.46.4(three@0.178.0):
-    dependencies:
-      bidi-js: 1.0.3
-      three: 0.178.0
-      troika-three-utils: 0.46.0(three@0.178.0)
-      troika-worker-utils: 0.46.0
-      webgl-sdf-generator: 1.1.1
-
-  troika-three-utils@0.46.0(three@0.178.0):
-    dependencies:
-      three: 0.178.0
-
-  troika-worker-utils@0.46.0: {}
 
   ts-api-utils@1.4.3(typescript@5.8.3):
     dependencies:
@@ -5121,8 +5053,6 @@ snapshots:
   util-deprecate@1.0.2: {}
 
   uuid@11.1.0: {}
-
-  uuid@9.0.1: {}
 
   vite-node@1.6.1(lightningcss@1.30.1):
     dependencies:
@@ -5204,8 +5134,6 @@ snapshots:
       - sugarss
       - supports-color
       - terser
-
-  webgl-sdf-generator@1.1.1: {}
 
   webidl-conversions@4.0.2: {}
 

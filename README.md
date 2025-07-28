@@ -25,13 +25,27 @@ pnpm add wirecam
 ## Quick Start
 
 ```typescript
-import { Wirecam, Inspector } from 'wirecam';
+import { Wirecam } from 'wirecam';
+import * as THREE from 'three';
 
-// Create container element
-const container = document.getElementById('camera-container');
+// Create Three.js scene and camera
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
+);
+const renderer = new THREE.WebGLRenderer();
 
-// Initialize Wirecam
-const controller = new Wirecam(container);
+// Initialize Wirecam with Three.js resources
+const controller = new Wirecam({
+  scene: scene,
+  camera: camera,
+  container: document.body,
+  debug: true,
+  autoStart: true,
+});
 
 // Add keyframes - link HTML elements with camera positions
 const keyframeId1 = controller.addKeyframe({
@@ -50,9 +64,6 @@ const keyframeId2 = controller.addKeyframe({
   easeIn: true,
   easeOut: true,
 });
-
-// Enable debug mode (optional)
-controller.settings.debug = true;
 
 // Camera starts automatically - scroll to see the animation!
 ```
@@ -75,13 +86,28 @@ The main class for camera control.
 #### Constructor
 
 ```typescript
-new Wirecam(container: HTMLElement, autoStart?: boolean)
+new Wirecam(options: WirecamOptions)
+```
+
+#### WirecamOptions
+
+```typescript
+interface WirecamOptions {
+  container?: HTMLElement; // Container element (default: document.body)
+  renderer?: THREE.WebGLRenderer; // Three.js renderer (optional)
+  scene?: THREE.Scene; // Three.js scene (optional)
+  camera?: THREE.PerspectiveCamera; // Three.js camera (optional)
+  autoStart?: boolean; // Start automatically (default: true)
+  debug?: boolean; // Enable debug mode (default: false)
+}
 ```
 
 #### Properties
 
 - `settings.debug: boolean` - Enable/disable debug mode
 - `defaults.keyframe: LinkedKeyframe` - Default values for keyframes
+- `scene: THREE.Scene` - The Three.js scene
+- `camera: THREE.PerspectiveCamera` - The Three.js camera
 
 #### Methods
 
@@ -93,6 +119,8 @@ new Wirecam(container: HTMLElement, autoStart?: boolean)
 - `dispose(): void` - Completely clean up the controller
 - `registerUpdateCallback(fn: () => void): string` - Register an update callback
 - `unregisterUpdateCallback(id: string): void` - Remove an update callback
+- `updateViewport(): void` - Update viewport calculations
+- `updateDebugMode(): void` - Update debug mode display
 
 ### Inspector
 
@@ -122,7 +150,17 @@ interface Keyframe {
   worldTargetRadius?: number; // Radius of the target object
   easeIn?: boolean; // Easing when fading in
   easeOut?: boolean; // Easing when fading out
-  onUpdate?: (liveValues: LiveKeyframe) => void; // Update callback
+  onUpdate?: (liveValues: KeyframeLiveValues) => void; // Update callback
+}
+
+interface KeyframeLiveValues {
+  activity: number; // Activity level (0-1) of the keyframe
+}
+
+interface LiveKeyframe extends Partial<LinkedKeyframe> {
+  ref: HTMLElement;
+  liveValues: KeyframeLiveValues;
+  onUpdate?: (liveValues: KeyframeLiveValues) => void;
 }
 ```
 
@@ -175,7 +213,12 @@ The Inspector provides a GUI for development and debugging:
 import { Wirecam, Inspector } from 'wirecam';
 
 // Create Wirecam instance
-const controller = new Wirecam(container);
+const controller = new Wirecam({
+  scene: scene,
+  camera: camera,
+  container: document.body,
+  debug: true,
+});
 
 // Create Inspector for development tools
 const inspector = new Inspector(document, controller, true);
@@ -223,7 +266,10 @@ This is a pnpm monorepo. To get started:
 # Install dependencies
 pnpm install
 
-# Build core package
+# Build all packages
+pnpm build
+
+# Build core package only
 pnpm --filter wirecam build
 
 # Linting
@@ -231,6 +277,9 @@ pnpm lint
 
 # Tests
 pnpm test
+
+# Start development server (Svelte example)
+cd examples/svelte && pnpm dev
 ```
 
 ### Project Structure
@@ -241,15 +290,18 @@ wirecam.js/
 │   └── wirecam/          # Core package
 │       ├── src/
 │       │   ├── Wirecam.ts    # Main class
-│       │   ├── types.ts               # TypeScript types
-│       │   ├── utils/                 # Utility functions
+│       │   ├── Inspector.ts  # Development tools
+│       │   ├── types.ts      # TypeScript types
+│       │   ├── utils/        # Utility functions
 │       │   │   ├── PositionSpy.ts     # Element position tracking
 │       │   │   └── ...                # More utility functions
-│       │   └── index.ts               # Exports
+│       │   └── index.ts      # Exports
 │       ├── package.json
 │       └── tsup.config.ts
-├── .github/workflows/      # CI/CD workflows
-└── package.json            # Root package.json
+├── examples/
+│   └── svelte/           # SvelteKit example
+├── .github/workflows/    # CI/CD workflows
+└── package.json          # Root package.json
 ```
 
 ## Technical Details
@@ -269,6 +321,7 @@ Tracks the position and size of HTML elements in the viewport and calculates ROI
 - Efficient ROI calculations
 - Optimized render loops
 - Intelligent update callbacks
+- Browser-compatible UUID generation
 
 ## Contributing
 

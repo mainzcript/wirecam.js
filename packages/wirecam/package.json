@@ -2,8 +2,8 @@
   "name": "wirecam",
   "version": "0.0.6",
   "description": "Scroll-driven camera controller for Three.js with advanced keyframe system",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
@@ -19,13 +19,11 @@
   },
   "dependencies": {
     "stats.js": "^0.17.0",
-    "tweakpane": "^4.0.5",
-    "uuid": "^9.0.0"
+    "tweakpane": "^4.0.5"
   },
   "devDependencies": {
     "@types/stats.js": "^0.17.4",
-    "@types/three": "^0.157.0",
-    "@types/uuid": "^9.0.0"
+    "@types/three": "^0.157.0"
   },
   "publishConfig": {
     "access": "public"
