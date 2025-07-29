@@ -1,205 +1,194 @@
 <script lang="ts">
-	import { Canvas, T } from '@threlte/core';
+	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
 	import { Wirecam } from 'wirecam';
 
-	let canvasElement: HTMLElement;
-	let camera: THREE.PerspectiveCamera;
-	let scene: THREE.Scene;
+	let container: HTMLDivElement;
 	let wirecam: Wirecam;
+	let scene: THREE.Scene;
+	let camera: THREE.PerspectiveCamera;
+	let renderer: THREE.WebGLRenderer;
 
 	onMount(() => {
-		console.log('Page mounted');
+		if (!browser) return;
 
-		// Get canvas element from DOM
-		canvasElement = document.querySelector('canvas') as HTMLElement;
-		console.log('Canvas element:', canvasElement);
+		// Scene setup
+		scene = new THREE.Scene();
+		scene.background = new THREE.Color(0x667eea);
 
-		// Wait for Threlte to initialize
-		setTimeout(() => {
-			console.log('Timeout executed');
-			console.log('Camera:', camera);
-			console.log('Scene:', scene);
+		// Camera setup
+		camera = new THREE.PerspectiveCamera(
+			75,
+			container.clientWidth / container.clientHeight,
+			0.1,
+			1000
+		);
+		camera.position.set(0, 5, 10);
+		camera.lookAt(0, 0, 0);
 
-			if (canvasElement && camera && scene) {
-				try {
-					// Initialize Wirecam with existing Threlte resources
-					wirecam = new Wirecam({
-						scene: scene,
-						camera: camera,
-						container: canvasElement,
-						debug: true,
-						autoStart: true
-					});
-					console.log('Wirecam initialized successfully');
+		// Renderer setup
+		renderer = new THREE.WebGLRenderer({ antialias: true });
+		renderer.setSize(container.clientWidth, container.clientHeight);
+		renderer.shadowMap.enabled = true;
+		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+		container.appendChild(renderer.domElement);
 
-					// Add some keyframes for demonstration
-					wirecam.addKeyframe({
-						ref: '#box-section',
-						cameraPos: new THREE.Vector3(-8, 5, 8),
-						worldTargetPos: new THREE.Vector3(-4, 0, 0),
-						worldTargetRadius: 1.5
-					});
+		// Lighting
+		const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
+		scene.add(ambientLight);
 
-					wirecam.addKeyframe({
-						ref: '#sphere-section',
-						cameraPos: new THREE.Vector3(0, 5, 8),
-						worldTargetPos: new THREE.Vector3(0, 0, 0),
-						worldTargetRadius: 1.5
-					});
+		const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+		directionalLight.position.set(10, 10, 5);
+		directionalLight.castShadow = true;
+		scene.add(directionalLight);
 
-					wirecam.addKeyframe({
-						ref: '#cylinder-section',
-						cameraPos: new THREE.Vector3(8, 5, 8),
-						worldTargetPos: new THREE.Vector3(4, 0, 0),
-						worldTargetRadius: 1.5
-					});
-					console.log('Keyframes added successfully');
-				} catch (error) {
-					console.error('Error initializing Wirecam:', error);
-				}
-			} else {
-				console.error('Missing required elements:', { canvasElement, camera, scene });
-			}
-		}, 100);
+		const pointLight = new THREE.PointLight(0xffffff, 0.5);
+		pointLight.position.set(-10, -10, -10);
+		scene.add(pointLight);
 
+		// Geometric Shapes
+		const boxGeometry = new THREE.BoxGeometry(2, 2, 2);
+		const boxMaterial = new THREE.MeshStandardMaterial({ color: 0xff6b6b });
+		const box = new THREE.Mesh(boxGeometry, boxMaterial);
+		box.position.set(-4, 0, 0);
+		box.castShadow = true;
+		scene.add(box);
+
+		const sphereGeometry = new THREE.SphereGeometry(1.5);
+		const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0x4ecdc4 });
+		const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+		sphere.position.set(0, 0, 0);
+		sphere.castShadow = true;
+		scene.add(sphere);
+
+		const cylinderGeometry = new THREE.CylinderGeometry(1, 1, 3);
+		const cylinderMaterial = new THREE.MeshStandardMaterial({ color: 0x45b7d1 });
+		const cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+		cylinder.position.set(4, 0, 0);
+		cylinder.castShadow = true;
+		scene.add(cylinder);
+
+		const torusGeometry = new THREE.TorusGeometry(1.5, 0.5);
+		const torusMaterial = new THREE.MeshStandardMaterial({ color: 0x96ceb4 });
+		const torus = new THREE.Mesh(torusGeometry, torusMaterial);
+		torus.position.set(0, 4, 0);
+		torus.castShadow = true;
+		scene.add(torus);
+
+		// Ground Plane
+		const groundGeometry = new THREE.BoxGeometry(20, 0.1, 20);
+		const groundMaterial = new THREE.MeshStandardMaterial({ color: 0xf0f0f0 });
+		const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+		ground.position.set(0, -2, 0);
+		ground.receiveShadow = true;
+		scene.add(ground);
+
+		// Initialize Wirecam
+		wirecam = new Wirecam({
+			renderer,
+			scene,
+			camera
+		});
+
+		// Add keyframes for different sections
+		wirecam.addKeyframe({
+			ref: '#box-section',
+			cameraPos: new THREE.Vector3(-4, 3, 5),
+			worldTargetPos: new THREE.Vector3(-4, 0, 0),
+			worldTargetRadius: 2
+		});
+
+		wirecam.addKeyframe({
+			ref: '#sphere-section',
+			cameraPos: new THREE.Vector3(0, 3, 5),
+			worldTargetPos: new THREE.Vector3(0, 0, 0),
+			worldTargetRadius: 2
+		});
+
+		wirecam.addKeyframe({
+			ref: '#cylinder-section',
+			cameraPos: new THREE.Vector3(4, 3, 5),
+			worldTargetPos: new THREE.Vector3(4, 0, 0),
+			worldTargetRadius: 2
+		});
+
+		// Animation loop
+		function animate() {
+			requestAnimationFrame(animate);
+			renderer.render(scene, camera);
+		}
+		animate();
+
+		// Handle resize
+		function handleResize() {
+			camera.aspect = container.clientWidth / container.clientHeight;
+			camera.updateProjectionMatrix();
+			renderer.setSize(container.clientWidth, container.clientHeight);
+		}
+		window.addEventListener('resize', handleResize);
+
+		// Cleanup
 		return () => {
-			if (wirecam) {
-				wirecam.dispose();
-			}
+			window.removeEventListener('resize', handleResize);
+			renderer.dispose();
+			wirecam.dispose();
 		};
 	});
 </script>
 
-<div class="scene-container">
-	<Canvas>
-		<!-- Lighting -->
-		<T.AmbientLight intensity={0.4}></T.AmbientLight>
-		<T.DirectionalLight position={[10, 10, 5]} intensity={1} castShadow></T.DirectionalLight>
-		<T.PointLight position={[-10, -10, -10]} intensity={0.5}></T.PointLight>
-
-		<!-- Geometric Shapes -->
-		<T.Mesh position={[-4, 0, 0]}>
-			<T.BoxGeometry args={[2, 2, 2]}></T.BoxGeometry>
-			<T.MeshStandardMaterial color="#ff6b6b"></T.MeshStandardMaterial>
-		</T.Mesh>
-
-		<T.Mesh position={[0, 0, 0]}>
-			<T.SphereGeometry args={[1.5]}></T.SphereGeometry>
-			<T.MeshStandardMaterial color="#4ecdc4"></T.MeshStandardMaterial>
-		</T.Mesh>
-
-		<T.Mesh position={[4, 0, 0]}>
-			<T.CylinderGeometry args={[1, 1, 3]}></T.CylinderGeometry>
-			<T.MeshStandardMaterial color="#45b7d1"></T.MeshStandardMaterial>
-		</T.Mesh>
-
-		<T.Mesh position={[0, 4, 0]}>
-			<T.TorusGeometry args={[1.5, 0.5]}></T.TorusGeometry>
-			<T.MeshStandardMaterial color="#96ceb4"></T.MeshStandardMaterial>
-		</T.Mesh>
-
-		<!-- Ground Plane -->
-		<T.Mesh position={[0, -2, 0]}>
-			<T.BoxGeometry args={[20, 0.1, 20]}></T.BoxGeometry>
-			<T.MeshStandardMaterial color="#f0f0f0"></T.MeshStandardMaterial>
-		</T.Mesh>
-
-		<!-- Camera -->
-		<T.PerspectiveCamera
-			position={[10, 10, 10]}
-			oncreate={(ref) => {
-				camera = ref;
-				// Get scene from camera's parent
-				if (ref.parent && ref.parent.type === 'Scene') {
-					scene = ref.parent as THREE.Scene;
-				}
-				ref.lookAt(0, 0, 0);
-			}}
-		></T.PerspectiveCamera>
-	</Canvas>
+<!-- Fixed background canvas -->
+<div class="fixed inset-0 -z-10" bind:this={container}>
+	<!-- Three.js canvas will be inserted here -->
 </div>
 
-<!-- HTML sections for keyframes -->
-<div class="sections">
-	<div id="box-section" class="section">
-		<h2>Box Section</h2>
-		<p>This section controls the camera view of the red box.</p>
+<!-- Scroll sections with keyframe references -->
+<section class="relative flex min-h-screen flex-col justify-center py-20">
+	<div id="box-section" class="pointer-events-none absolute inset-0"></div>
+	<div
+		class="mx-auto max-w-3xl rounded-lg border-2 border-white/30 bg-white/10 p-6 backdrop-blur-md"
+	>
+		<h2 class="m-0 mb-2.5 text-center text-2xl text-white">Box Section</h2>
+		<p class="m-0 text-center leading-relaxed text-white/80">
+			This section controls the camera view of the red box. The camera will smoothly transition to
+			focus on the box when this section is in view.
+		</p>
 	</div>
+</section>
 
-	<div id="sphere-section" class="section">
-		<h2>Sphere Section</h2>
-		<p>This section controls the camera view of the green sphere.</p>
+<section class="relative flex min-h-screen flex-col justify-center py-20">
+	<div id="sphere-section" class="pointer-events-none absolute inset-0"></div>
+	<div
+		class="mx-auto max-w-3xl rounded-lg border-2 border-white/30 bg-white/10 p-6 backdrop-blur-md"
+	>
+		<h2 class="m-0 mb-2.5 text-center text-2xl text-white">Sphere Section</h2>
+		<p class="m-0 text-center leading-relaxed text-white/80">
+			This section controls the camera view of the green sphere. The camera will smoothly transition
+			to focus on the sphere when this section is in view.
+		</p>
 	</div>
+</section>
 
-	<div id="cylinder-section" class="section">
-		<h2>Cylinder Section</h2>
-		<p>This section controls the camera view of the blue cylinder.</p>
+<section class="relative flex min-h-screen flex-col justify-center py-20">
+	<div id="cylinder-section" class="pointer-events-none absolute inset-0"></div>
+	<div
+		class="mx-auto max-w-3xl rounded-lg border-2 border-white/30 bg-white/10 p-6 backdrop-blur-md"
+	>
+		<h2 class="m-0 mb-2.5 text-center text-2xl text-white">Cylinder Section</h2>
+		<p class="m-0 text-center leading-relaxed text-white/80">
+			This section controls the camera view of the blue cylinder. The camera will smoothly
+			transition to focus on the cylinder when this section is in view.
+		</p>
 	</div>
-</div>
+</section>
 
-<style>
-	.scene-container {
-		width: 100%;
-		height: 100vh;
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	}
-
-	.sections {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100vh;
-		pointer-events: none;
-		z-index: 1;
-	}
-
-	.section {
-		position: absolute;
-		width: 300px;
-		height: 200px;
-		background: rgba(255, 255, 255, 0.1);
-		border: 2px solid rgba(255, 255, 255, 0.3);
-		border-radius: 8px;
-		padding: 20px;
-		pointer-events: auto;
-		backdrop-filter: blur(10px);
-	}
-
-	#box-section {
-		top: 20%;
-		left: 10%;
-	}
-
-	#sphere-section {
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-	}
-
-	#cylinder-section {
-		top: 20%;
-		right: 10%;
-	}
-
-	.section h2 {
-		margin: 0 0 10px 0;
-		color: white;
-		font-size: 1.2em;
-	}
-
-	.section p {
-		margin: 0;
-		color: rgba(255, 255, 255, 0.8);
-		font-size: 0.9em;
-		line-height: 1.4;
-	}
-
-	:global(body) {
-		margin: 0;
-		padding: 0;
-		overflow: hidden;
-	}
-</style>
+<!-- Global styles for body -->
+<svelte:head>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			overflow-x: hidden;
+		}
+	</style>
+</svelte:head>
