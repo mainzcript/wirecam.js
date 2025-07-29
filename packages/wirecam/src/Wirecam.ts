@@ -60,9 +60,9 @@ export class Wirecam {
       easeOut: true,
     },
   };
-  public readonly scene: THREE.Scene;
+  private readonly scene: THREE.Scene;
   private readonly refIndicator: HTMLDivElement;
-  public readonly camera: THREE.PerspectiveCamera;
+  private readonly camera: THREE.PerspectiveCamera;
   private readonly viewportPosSpy: PositionSpy;
   private viewportRoi: ROI = {
     width: 0,
@@ -116,6 +116,20 @@ export class Wirecam {
     }
 
     this.logDebug('Wirecam', 'Initialized');
+  }
+
+  /**
+   * Get the Three.js scene.
+   */
+  public getScene(): THREE.Scene {
+    return this.scene;
+  }
+
+  /**
+   * Get the Three.js camera.
+   */
+  public getCamera(): THREE.PerspectiveCamera {
+    return this.camera;
   }
 
   /**

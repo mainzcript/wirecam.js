@@ -168,11 +168,11 @@ export class Inspector {
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     const sceneObjects: THREE.Object3D[] = [];
-    this.wirecam.scene.traverse((object) => {
+    this.wirecam.getScene().traverse((object) => {
       sceneObjects.push(object);
     });
 
-    this.raycaster.setFromCamera(this.mouse, this.wirecam.camera);
+    this.raycaster.setFromCamera(this.mouse, this.wirecam.getCamera());
     const intersects = this.raycaster.intersectObjects(sceneObjects);
     if (intersects.length > 0) {
       const intersectionPoint = intersects[0].point;
@@ -222,7 +222,7 @@ export class Inspector {
 
   public update(): void {
     if (this.paneParams) {
-      const cam = this.wirecam.camera;
+      const cam = this.wirecam.getCamera();
       this.paneParams.cameraPosX = cam.position.x;
       this.paneParams.cameraPosY = cam.position.y;
       this.paneParams.cameraPosZ = cam.position.z;
