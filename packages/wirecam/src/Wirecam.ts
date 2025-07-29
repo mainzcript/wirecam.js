@@ -31,10 +31,9 @@ type WirecamDefaults = {
 };
 
 type WirecamOptions = {
-  container?: HTMLElement;
-  renderer?: THREE.WebGLRenderer;
-  scene?: THREE.Scene;
-  camera?: THREE.PerspectiveCamera;
+  renderer: THREE.WebGLRenderer;
+  scene: THREE.Scene;
+  camera: THREE.PerspectiveCamera;
   autoStart?: boolean;
   debug?: boolean;
 };
@@ -63,7 +62,6 @@ export class Wirecam {
   };
   public readonly scene: THREE.Scene;
   private readonly refIndicator: HTMLDivElement;
-  private readonly renderer: THREE.WebGLRenderer;
   public readonly camera: THREE.PerspectiveCamera;
   private readonly viewportPosSpy: PositionSpy;
   private viewportRoi: ROI = {
@@ -82,13 +80,9 @@ export class Wirecam {
   } | null = null;
   private running = false;
   private updateCallbacks: { [id: string]: () => void } = {};
-  private ownsRenderer: boolean = false;
-  private ownsScene: boolean = false;
-  private ownsCamera: boolean = false;
 
-  constructor(options: WirecamOptions = {}) {
+  constructor(options: WirecamOptions) {
     const {
-      container,
       renderer,
       scene,
       camera,
@@ -96,52 +90,13 @@ export class Wirecam {
       debug = false,
     } = options;
 
-    // Update settings
+    this.scene = scene;
+    this.camera = camera;
+
     this.settings.debug = debug;
 
-    // Handle renderer
-    if (renderer) {
-      this.renderer = renderer;
-      this.ownsRenderer = false;
-    } else {
-      if (!container) {
-        throw new Error(
-          'Wirecam: Either renderer or container must be provided'
-        );
-      }
-      this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-      this.renderer.setClearColor(0x000000, 0);
-      container.appendChild(this.renderer.domElement);
-      this.ownsRenderer = true;
-    }
+    this.viewportPosSpy = new PositionSpy(renderer.domElement);
 
-    // Handle scene
-    if (scene) {
-      this.scene = scene;
-      this.ownsScene = false;
-    } else {
-      this.scene = new THREE.Scene();
-      this.ownsScene = true;
-    }
-
-    // Handle camera
-    if (camera) {
-      this.camera = camera;
-      this.ownsCamera = false;
-    } else {
-      this.camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-      this.ownsCamera = true;
-    }
-
-    // Setup viewport spy
-    const viewportContainer =
-      container || this.renderer.domElement.parentElement;
-    if (!viewportContainer) {
-      throw new Error('Wirecam: Cannot determine viewport container');
-    }
-    this.viewportPosSpy = new PositionSpy(viewportContainer);
-
-    // Create reference indicator
     const refIndicator = document.createElement('div');
     Object.assign(refIndicator.style, {
       position: 'fixed',
@@ -274,10 +229,7 @@ export class Wirecam {
       this.unregisterUpdateCallback(id);
     }
 
-    // 3. Reset scene
-    this.scene.clear();
-
-    // 4. Log if debug is enabled
+    // 3. Log if debug is enabled
     this.logDebug('Wirecam', 'Reset');
   }
 
@@ -285,12 +237,6 @@ export class Wirecam {
     this.stop();
     this.clear();
     document.body.removeChild(this.refIndicator);
-
-    // Only dispose resources that Wirecam owns
-    if (this.ownsRenderer) {
-      this.renderer.dispose();
-    }
-
     this.logDebug('Wirecam', 'Unmounted');
   }
 
@@ -302,7 +248,6 @@ export class Wirecam {
     this.updateKeyframeDerivedValues();
     this.applyKeyframeBlend();
     this.updateDebugMode();
-    this.render();
     for (const cb of Object.values(this.updateCallbacks)) {
       try {
         cb();
@@ -528,7 +473,6 @@ export class Wirecam {
     this.camera.fov = lerp(prev.fov, next.fov, t);
 
     // 3.3 Update aspect ratio
-    this.renderer.setSize(this.viewportRoi.width, this.viewportRoi.height);
     this.camera.aspect = this.viewportRoi.width / this.viewportRoi.height;
 
     // 3.4 Update projection matrix
@@ -606,12 +550,5 @@ export class Wirecam {
 
   private logDebug(...msg: Parameters<typeof console.log>): void {
     logDebug(this.settings.debug, 'Wirecam', ...msg);
-  }
-
-  private render() {
-    // Only render if Wirecam owns the renderer
-    if (this.ownsRenderer) {
-      this.renderer.render(this.scene, this.camera);
-    }
   }
 }

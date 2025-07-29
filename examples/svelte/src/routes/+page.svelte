@@ -15,24 +15,14 @@
 
 		// Scene setup
 		scene = new THREE.Scene();
-		scene.background = new THREE.Color(0x667eea);
 
 		// Camera setup
-		camera = new THREE.PerspectiveCamera(
-			75,
-			container.clientWidth / container.clientHeight,
-			0.1,
-			1000
-		);
-		camera.position.set(0, 5, 10);
-		camera.lookAt(0, 0, 0);
+		camera = new THREE.PerspectiveCamera();
 
 		// Renderer setup
-		renderer = new THREE.WebGLRenderer({ antialias: true });
-		renderer.setSize(container.clientWidth, container.clientHeight);
+		renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-		container.appendChild(renderer.domElement);
 
 		// Lighting
 		const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
@@ -91,6 +81,10 @@
 			camera
 		});
 
+		// Insert canvas into container
+		// eslint-disable-next-line
+		container.appendChild(renderer.domElement);
+
 		// Add keyframes for different sections
 		wirecam.addKeyframe({
 			ref: '#box-section',
@@ -113,36 +107,40 @@
 			worldTargetRadius: 2
 		});
 
-		// Animation loop
-		function animate() {
-			requestAnimationFrame(animate);
+		// Handle canvas resizing to fit container
+		const handleResize = () => {
+			const rect = container.getBoundingClientRect();
+			renderer.setSize(rect.width, rect.height);
+		};
+		window.addEventListener('resize', handleResize);
+		handleResize();
+
+		// Start animation loop
+		let animationId: number;
+		const animate = () => {
+			animationId = requestAnimationFrame(animate);
 			renderer.render(scene, camera);
-		}
+		};
 		animate();
 
-		// Handle resize
-		function handleResize() {
-			camera.aspect = container.clientWidth / container.clientHeight;
-			camera.updateProjectionMatrix();
-			renderer.setSize(container.clientWidth, container.clientHeight);
-		}
-		window.addEventListener('resize', handleResize);
-
-		// Cleanup
+		// Cleanup function
 		return () => {
 			window.removeEventListener('resize', handleResize);
+			if (animationId) {
+				cancelAnimationFrame(animationId);
+			}
 			renderer.dispose();
 			wirecam.dispose();
 		};
 	});
 </script>
 
-<!-- Fixed background canvas -->
-<div class="fixed inset-0 -z-10" bind:this={container}>
+<!-- Fixed background canvas container -->
+<div class="fixed inset-0 -z-10 bg-red-200" bind:this={container}>
 	<!-- Three.js canvas will be inserted here -->
 </div>
 
-<!-- Scroll sections with keyframe references -->
+<!-- Scroll sections with keyframe references for camera control -->
 <section class="relative flex min-h-screen flex-col justify-center py-20">
 	<div id="box-section" class="pointer-events-none absolute inset-0"></div>
 	<div
@@ -181,14 +179,3 @@
 		</p>
 	</div>
 </section>
-
-<!-- Global styles for body -->
-<svelte:head>
-	<style>
-		body {
-			margin: 0;
-			padding: 0;
-			overflow-x: hidden;
-		}
-	</style>
-</svelte:head>
