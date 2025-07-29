@@ -136,7 +136,7 @@
 </script>
 
 <!-- Fixed background canvas container -->
-<div class="fixed inset-0 -z-10 bg-red-200" bind:this={container}>
+<div class="fixed inset-0 -z-10" bind:this={container}>
 	<!-- Three.js canvas will be inserted here -->
 </div>
 

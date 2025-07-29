@@ -203,7 +203,7 @@ export class Wirecam {
 
   start() {
     this.running = true;
-    this.loop();
+    this.animate();
     this.logDebug('Wirecam', 'Started');
   }
 
@@ -212,10 +212,10 @@ export class Wirecam {
     this.logDebug('Wirecam', 'Stopped');
   }
 
-  private loop = () => {
+  private animate = () => {
     if (!this.running) return;
     this.update();
-    requestAnimationFrame(this.loop);
+    requestAnimationFrame(this.animate);
   };
 
   public clear() {
