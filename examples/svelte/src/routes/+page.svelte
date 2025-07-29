@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import { Container } from '$lib/components/ui/container';
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
 	import { Wirecam } from 'wirecam';
@@ -87,23 +88,37 @@
 
 		// Add keyframes for different sections
 		wirecam.addKeyframe({
-			ref: '#box-section',
+			ref: '#hero-keyframe-ref',
+			cameraPos: new THREE.Vector3(0, 2, 8),
+			worldTargetPos: new THREE.Vector3(0, 0, 0),
+			worldTargetRadius: 4
+		});
+
+		wirecam.addKeyframe({
+			ref: '#box-keyframe-ref',
 			cameraPos: new THREE.Vector3(-4, 3, 5),
 			worldTargetPos: new THREE.Vector3(-4, 0, 0),
-			worldTargetRadius: 2
+			worldTargetRadius: 1.25
 		});
 
 		wirecam.addKeyframe({
-			ref: '#sphere-section',
+			ref: '#sphere-keyframe-ref',
 			cameraPos: new THREE.Vector3(0, 3, 5),
 			worldTargetPos: new THREE.Vector3(0, 0, 0),
-			worldTargetRadius: 2
+			worldTargetRadius: 1.5
 		});
 
 		wirecam.addKeyframe({
-			ref: '#cylinder-section',
+			ref: '#cylinder-keyframe-ref',
 			cameraPos: new THREE.Vector3(4, 3, 5),
 			worldTargetPos: new THREE.Vector3(4, 0, 0),
+			worldTargetRadius: 1.5
+		});
+
+		wirecam.addKeyframe({
+			ref: '#torus-keyframe-ref',
+			cameraPos: new THREE.Vector3(0, 7, 5),
+			worldTargetPos: new THREE.Vector3(0, 4, 0),
 			worldTargetRadius: 2
 		});
 
@@ -141,41 +156,96 @@
 </div>
 
 <!-- Scroll sections with keyframe references for camera control -->
-<section class="relative flex min-h-screen flex-col justify-center py-20">
-	<div id="box-section" class="pointer-events-none absolute inset-0"></div>
-	<div
-		class="mx-auto max-w-3xl rounded-lg border-2 border-white/30 bg-white/10 p-6 backdrop-blur-md"
-	>
-		<h2 class="m-0 mb-2.5 text-center text-2xl text-white">Box Section</h2>
-		<p class="m-0 text-center leading-relaxed text-white/80">
-			This section controls the camera view of the red box. The camera will smoothly transition to
-			focus on the box when this section is in view.
-		</p>
+<section class="flex min-h-screen items-center justify-center">
+	<div id="hero-keyframe-ref" class="absolute inset-0"></div>
+	<div class="relative z-10 text-center">
+		<div
+			class="mx-auto max-w-4xl rounded-lg border-2 border-white/30 bg-black/20 p-8 backdrop-blur-md"
+		>
+			<h1 class="m-0 mb-4 text-5xl font-bold text-white">Welcome to Wirecam.js</h1>
+			<p class="m-0 mb-6 text-xl leading-relaxed text-white/80">
+				Experience the magic of scroll-driven 3D camera control. Scroll down to explore each
+				geometric wonder up close.
+			</p>
+			<div class="flex items-center justify-center gap-2 text-white/60">
+				<svg class="h-6 w-6 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M19 14l-7 7m0 0l-7-7m7 7V3"
+					></path>
+				</svg>
+				<span class="text-sm">Scroll to explore</span>
+			</div>
+		</div>
 	</div>
 </section>
 
-<section class="relative flex min-h-screen flex-col justify-center py-20">
-	<div id="sphere-section" class="pointer-events-none absolute inset-0"></div>
-	<div
-		class="mx-auto max-w-3xl rounded-lg border-2 border-white/30 bg-white/10 p-6 backdrop-blur-md"
-	>
-		<h2 class="m-0 mb-2.5 text-center text-2xl text-white">Sphere Section</h2>
-		<p class="m-0 text-center leading-relaxed text-white/80">
-			This section controls the camera view of the green sphere. The camera will smoothly transition
-			to focus on the sphere when this section is in view.
-		</p>
-	</div>
+<section>
+	<Container class="grid min-h-screen grid-cols-2 gap-4 py-20">
+		<div class="order-1 flex items-center justify-center">
+			<div
+				class="mx-auto max-w-3xl rounded-lg border-2 border-white/30 bg-black/20 p-6 backdrop-blur-md"
+			>
+				<h2 class="m-0 mb-2.5 text-center text-2xl text-white">The Red Cube</h2>
+				<p class="m-0 text-center leading-relaxed text-white/80">
+					Watch as the camera gracefully swoops in to showcase this vibrant red cube. Perfect
+					angles, perfect lighting - every detail matters in 3D storytelling.
+				</p>
+			</div>
+		</div>
+		<div id="box-keyframe-ref" class="order-2"></div>
+	</Container>
 </section>
 
-<section class="relative flex min-h-screen flex-col justify-center py-20">
-	<div id="cylinder-section" class="pointer-events-none absolute inset-0"></div>
-	<div
-		class="mx-auto max-w-3xl rounded-lg border-2 border-white/30 bg-white/10 p-6 backdrop-blur-md"
-	>
-		<h2 class="m-0 mb-2.5 text-center text-2xl text-white">Cylinder Section</h2>
-		<p class="m-0 text-center leading-relaxed text-white/80">
-			This section controls the camera view of the blue cylinder. The camera will smoothly
-			transition to focus on the cylinder when this section is in view.
-		</p>
-	</div>
+<section>
+	<Container class="grid min-h-screen grid-cols-2 gap-4 py-20">
+		<div class="order-2 flex items-center justify-center">
+			<div
+				class="mx-auto max-w-3xl rounded-lg border-2 border-white/30 bg-black/20 p-6 backdrop-blur-md"
+			>
+				<h2 class="m-0 mb-2.5 text-center text-2xl text-white">The Teal Sphere</h2>
+				<p class="m-0 text-center leading-relaxed text-white/80">
+					Behold the mesmerizing teal sphere - a perfect example of geometric beauty. The camera
+					dances around it, revealing its smooth, flawless surface from every angle.
+				</p>
+			</div>
+		</div>
+		<div id="sphere-keyframe-ref" class="order-1"></div>
+	</Container>
+</section>
+
+<section>
+	<Container class="grid min-h-screen grid-cols-2 gap-4 py-20">
+		<div class="order-1 flex items-center justify-center">
+			<div
+				class="mx-auto max-w-3xl rounded-lg border-2 border-white/30 bg-black/20 p-6 backdrop-blur-md"
+			>
+				<h2 class="m-0 mb-2.5 text-center text-2xl text-white">The Blue Cylinder</h2>
+				<p class="m-0 text-center leading-relaxed text-white/80">
+					Meet the elegant blue cylinder - standing tall and proud. The camera captures its majestic
+					height and perfect proportions with cinematic precision.
+				</p>
+			</div>
+		</div>
+		<div id="cylinder-keyframe-ref" class="order-2"></div>
+	</Container>
+</section>
+
+<section>
+	<Container class="grid min-h-screen grid-cols-2 gap-4 py-20">
+		<div class="order-2 flex items-center justify-center">
+			<div
+				class="mx-auto max-w-3xl rounded-lg border-2 border-white/30 bg-black/20 p-6 backdrop-blur-md"
+			>
+				<h2 class="m-0 mb-2.5 text-center text-2xl text-white">The Green Torus</h2>
+				<p class="m-0 text-center leading-relaxed text-white/80">
+					The mysterious green torus - a donut-shaped wonder floating in space. The camera orbits
+					around this unique form, showcasing its infinite curves and organic flow.
+				</p>
+			</div>
+		</div>
+		<div id="torus-keyframe-ref" class="order-1"></div>
+	</Container>
 </section>
