@@ -4,13 +4,14 @@ An advanced scroll-driven camera controller for Three.js with an intelligent key
 
 ## Features
 
-- 🎥 **Intelligent Camera Control** - Automatic camera positioning based on HTML elements
-- 🎯 **Keyframe System** - Link HTML elements with ideal camera positions
-- 🔄 **Smooth Interpolation** - Seamless transitions between keyframes with easing functions
-- 🎨 **Framework Agnostic** - Works with any framework or vanilla JavaScript
-- 📦 **TypeScript Support** - Full type definitions included
-- 🐛 **Debug Mode** - Visual indicators for development and debugging
-- 🚀 **Performance Optimized** - Efficient calculations and rendering
+- **Intelligent Camera Control** - Automatic camera positioning based on HTML elements
+- **Keyframe System** - Link HTML elements with ideal camera positions
+- **Smooth Interpolation** - Seamless transitions between keyframes with easing functions
+- **Framework Agnostic** - Works with any framework or vanilla JavaScript
+- **TypeScript Support** - Full type definitions included
+- **Debug Mode** - Visual indicators for development and debugging
+- **Performance Optimized** - Efficient calculations and rendering
+- **ManagedCanvas** - Simple Three.js setup with just an HTML container
 
 ## Installation
 
@@ -24,31 +25,22 @@ pnpm add wirecam
 
 ## Quick Start
 
+### Option 1: Simple Setup with ManagedCanvas
+
 ```typescript
-import { Wirecam } from 'wirecam';
-import * as THREE from 'three';
+import { ManagedCanvas } from 'wirecam';
 
-// Create Three.js scene and camera
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(
-  75,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000
-);
-const renderer = new THREE.WebGLRenderer();
-
-// Initialize Wirecam with Three.js resources
-const controller = new Wirecam({
-  scene: scene,
-  camera: camera,
-  container: document.body,
+// Create a managed canvas with automatic Three.js setup
+const canvas = new ManagedCanvas({
+  container: document.getElementById('camera-container'),
   debug: true,
-  autoStart: true,
 });
 
+// Get the Wirecam instance for adding keyframes
+const wirecam = canvas.getWirecam();
+
 // Add keyframes - link HTML elements with camera positions
-const keyframeId1 = controller.addKeyframe({
+const keyframeId1 = wirecam.addKeyframe({
   ref: '#section-1', // CSS selector or HTMLElement
   cameraPos: new THREE.Vector3(0, 0, 5),
   worldTargetPos: new THREE.Vector3(0, 0, 0),
@@ -56,7 +48,55 @@ const keyframeId1 = controller.addKeyframe({
   cameraUp: new THREE.Vector3(0, 1, 0),
 });
 
-const keyframeId2 = controller.addKeyframe({
+const keyframeId2 = wirecam.addKeyframe({
+  ref: '#section-2',
+  cameraPos: new THREE.Vector3(5, 2, 0),
+  worldTargetPos: new THREE.Vector3(0, 0, 0),
+  worldTargetRadius: 1.5,
+  easeIn: true,
+  easeOut: true,
+});
+
+// Add 3D objects to the scene
+const scene = canvas.getScene();
+const geometry = new THREE.BoxGeometry();
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+// Camera starts automatically - scroll to see the animation!
+```
+
+### Option 2: Manual Three.js Setup
+
+```typescript
+import { Wirecam } from 'wirecam';
+import * as THREE from 'three';
+
+// Create Three.js scene and camera
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera();
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+
+// Initialize Wirecam with Three.js resources
+const wirecam = new Wirecam({
+  renderer: renderer,
+  scene: scene,
+  camera: camera,
+  debug: true,
+  autoStart: true,
+});
+
+// Add keyframes - link HTML elements with camera positions
+const keyframeId1 = wirecam.addKeyframe({
+  ref: '#section-1', // CSS selector or HTMLElement
+  cameraPos: new THREE.Vector3(0, 0, 5),
+  worldTargetPos: new THREE.Vector3(0, 0, 0),
+  worldTargetRadius: 2,
+  cameraUp: new THREE.Vector3(0, 1, 0),
+});
+
+const keyframeId2 = wirecam.addKeyframe({
   ref: '#section-2',
   cameraPos: new THREE.Vector3(5, 2, 0),
   worldTargetPos: new THREE.Vector3(0, 0, 0),
@@ -79,6 +119,40 @@ wirecam.js uses an intelligent system that links HTML elements with ideal camera
 
 ## API Reference
 
+### ManagedCanvas
+
+A wrapper class that handles Three.js setup and lifecycle with Wirecam integration.
+
+#### Constructor
+
+```typescript
+new ManagedCanvas(options: ManagedCanvasOptions)
+```
+
+#### ManagedCanvasOptions
+
+```typescript
+interface ManagedCanvasOptions {
+  container: HTMLElement; // Container element (required)
+  autoStart?: boolean; // Start automatically (default: true)
+  debug?: boolean; // Enable debug mode (default: false)
+  backgroundColor?: THREE.ColorRepresentation; // Background color (default: 0x000000)
+  antialias?: boolean; // Enable antialiasing (default: true)
+  alpha?: boolean; // Enable alpha channel (default: true)
+  pixelRatio?: number; // Device pixel ratio (default: window.devicePixelRatio)
+}
+```
+
+#### Methods
+
+- `getWirecam(): Wirecam` - Get the Wirecam instance
+- `getScene(): THREE.Scene` - Get the Three.js scene
+- `getCamera(): THREE.PerspectiveCamera` - Get the Three.js camera
+- `getRenderer(): THREE.WebGLRenderer` - Get the Three.js renderer
+- `start(): void` - Start the animation loop
+- `stop(): void` - Stop the animation loop
+- `dispose(): void` - Clean up all resources
+
 ### Wirecam
 
 The main class for camera control.
@@ -93,10 +167,9 @@ new Wirecam(options: WirecamOptions)
 
 ```typescript
 interface WirecamOptions {
-  container?: HTMLElement; // Container element (default: document.body)
-  renderer?: THREE.WebGLRenderer; // Three.js renderer (optional)
-  scene?: THREE.Scene; // Three.js scene (optional)
-  camera?: THREE.PerspectiveCamera; // Three.js camera (optional)
+  renderer: THREE.WebGLRenderer; // Three.js renderer (required)
+  scene: THREE.Scene; // Three.js scene (required)
+  camera: THREE.PerspectiveCamera; // Three.js camera (required)
   autoStart?: boolean; // Start automatically (default: true)
   debug?: boolean; // Enable debug mode (default: false)
 }
@@ -106,11 +179,11 @@ interface WirecamOptions {
 
 - `settings.debug: boolean` - Enable/disable debug mode
 - `defaults.keyframe: LinkedKeyframe` - Default values for keyframes
-- `scene: THREE.Scene` - The Three.js scene
-- `camera: THREE.PerspectiveCamera` - The Three.js camera
 
 #### Methods
 
+- `getScene(): THREE.Scene` - Get the Three.js scene
+- `getCamera(): THREE.PerspectiveCamera` - Get the Three.js camera
 - `addKeyframe(keyframe: Partial<Keyframe>): string | null` - Add a keyframe
 - `removeKeyframe(id: string): void` - Remove a keyframe
 - `start(): void` - Start camera animation
@@ -170,19 +243,19 @@ interface LiveKeyframe extends Partial<LinkedKeyframe> {
 
 ```typescript
 // Register callback for every frame
-const callbackId = controller.registerUpdateCallback(() => {
+const callbackId = wirecam.registerUpdateCallback(() => {
   // Execute your own logic here
   console.log('Camera updated');
 });
 
 // Remove callback later
-controller.unregisterUpdateCallback(callbackId);
+wirecam.unregisterUpdateCallback(callbackId);
 ```
 
 ### Keyframe Update Callbacks
 
 ```typescript
-const keyframeId = controller.addKeyframe({
+const keyframeId = wirecam.addKeyframe({
   ref: '#my-element',
   cameraPos: new THREE.Vector3(0, 0, 5),
   onUpdate: (liveValues) => {
@@ -196,7 +269,7 @@ const keyframeId = controller.addKeyframe({
 
 ```typescript
 // Enable debug mode for visual indicators
-controller.settings.debug = true;
+wirecam.settings.debug = true;
 
 // Shows:
 // - Red reference indicators
@@ -212,16 +285,16 @@ The Inspector provides a GUI for development and debugging:
 ```typescript
 import { Wirecam, Inspector } from 'wirecam';
 
-// Create Wirecam instance
-const controller = new Wirecam({
+// Create Wirecam instance (either manually or via ManagedCanvas)
+const wirecam = new Wirecam({
+  renderer: renderer,
   scene: scene,
   camera: camera,
-  container: document.body,
   debug: true,
 });
 
 // Create Inspector for development tools
-const inspector = new Inspector(document, controller, true);
+const inspector = new Inspector(document, wirecam, true);
 
 // Show GUI controls (FPS, camera info, position helper)
 inspector.showGuiControls();
@@ -289,13 +362,14 @@ wirecam.js/
 ├── packages/
 │   └── wirecam/          # Core package
 │       ├── src/
-│       │   ├── Wirecam.ts    # Main class
-│       │   ├── Inspector.ts  # Development tools
-│       │   ├── types.ts      # TypeScript types
-│       │   ├── utils/        # Utility functions
+│       │   ├── Wirecam.ts        # Main class
+│       │   ├── ManagedCanvas.ts  # Three.js wrapper
+│       │   ├── Inspector.ts      # Development tools
+│       │   ├── types.ts          # TypeScript types
+│       │   ├── utils/            # Utility functions
 │       │   │   ├── PositionSpy.ts     # Element position tracking
 │       │   │   └── ...                # More utility functions
-│       │   └── index.ts      # Exports
+│       │   └── index.ts          # Exports
 │       ├── package.json
 │       └── tsup.config.ts
 ├── examples/
@@ -335,17 +409,3 @@ MIT License - see LICENSE file for details.
 
 - Marius Klein
 - Danny Staus
-
-## Release & Versioning
-
-This project uses [changesets](https://github.com/changesets/changesets) for versioning and release management in a pnpm monorepo.
-
-- All changes to packages require a changeset. See [CONTRIBUTING.md](./CONTRIBUTING.md) for details (for contributors).
-- Releases are managed by maintainers: changes are collected on the `develop` branch and merged into `main` via Pull Request.
-- Maintainers trigger releases manually via GitHub Actions (see [RELEASING.md](./RELEASING.md) for maintainers).
-- Snapshots are published automatically to npm with the `next` tag on every push to `main` (except release commits).
-
-For more information:
-
-- [RELEASING.md](./RELEASING.md) — Release workflow and best practices (for maintainers)
-- [CONTRIBUTING.md](./CONTRIBUTING.md) — Contribution guidelines and changeset requirements (for contributors)
