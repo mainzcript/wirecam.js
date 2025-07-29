@@ -5,7 +5,7 @@ import { ease, lerp } from './utils/math';
 import { logDebug } from './utils/logDebug';
 import PositionSpy, { type ROI } from './utils/PositionSpy';
 import { radToDeg } from 'three/src/math/MathUtils.js';
-import { v4 as uuidv4 } from 'uuid';
+import { generateUUID } from './utils/uuid';
 
 type WirecamKeyframe = LiveKeyframe & {
   posSpy: PositionSpy;
@@ -30,6 +30,14 @@ type WirecamDefaults = {
   keyframe: LinkedKeyframe;
 };
 
+type WirecamOptions = {
+  renderer: THREE.WebGLRenderer;
+  scene: THREE.Scene;
+  camera: THREE.PerspectiveCamera;
+  autoStart?: boolean;
+  debug?: boolean;
+};
+
 /**
  * Central controller class for the camera during camera movement.
  *
@@ -52,10 +60,9 @@ export class Wirecam {
       easeOut: true,
     },
   };
-  public readonly scene: THREE.Scene;
+  private readonly scene: THREE.Scene;
   private readonly refIndicator: HTMLDivElement;
-  private readonly renderer: THREE.WebGLRenderer;
-  public readonly camera: THREE.PerspectiveCamera;
+  private readonly camera: THREE.PerspectiveCamera;
   private readonly viewportPosSpy: PositionSpy;
   private viewportRoi: ROI = {
     width: 0,
@@ -74,16 +81,21 @@ export class Wirecam {
   private running = false;
   private updateCallbacks: { [id: string]: () => void } = {};
 
-  constructor(container: HTMLElement, autoStart: boolean = true) {
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setClearColor(0x000000, 0);
-    container.appendChild(renderer.domElement);
+  constructor(options: WirecamOptions) {
+    const {
+      renderer,
+      scene,
+      camera,
+      autoStart = true,
+      debug = false,
+    } = options;
 
-    this.renderer = renderer;
+    this.scene = scene;
+    this.camera = camera;
 
-    this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-    this.viewportPosSpy = new PositionSpy(container);
+    this.settings.debug = debug;
+
+    this.viewportPosSpy = new PositionSpy(renderer.domElement);
 
     const refIndicator = document.createElement('div');
     Object.assign(refIndicator.style, {
@@ -104,6 +116,20 @@ export class Wirecam {
     }
 
     this.logDebug('Wirecam', 'Initialized');
+  }
+
+  /**
+   * Get the Three.js scene.
+   */
+  public getScene(): THREE.Scene {
+    return this.scene;
+  }
+
+  /**
+   * Get the Three.js camera.
+   */
+  public getCamera(): THREE.PerspectiveCamera {
+    return this.camera;
   }
 
   /**
@@ -129,7 +155,7 @@ export class Wirecam {
     keyframe.ref = keyframe.ref as HTMLElement;
 
     // 2. Generate a unique ID for the keyframe
-    const id = uuidv4();
+    const id = generateUUID();
 
     // 3. Create yellow sphere
     const sphereGeometry = new THREE.SphereGeometry(
@@ -191,7 +217,7 @@ export class Wirecam {
 
   start() {
     this.running = true;
-    this.loop();
+    this.animate();
     this.logDebug('Wirecam', 'Started');
   }
 
@@ -200,10 +226,10 @@ export class Wirecam {
     this.logDebug('Wirecam', 'Stopped');
   }
 
-  private loop = () => {
+  private animate = () => {
     if (!this.running) return;
     this.update();
-    requestAnimationFrame(this.loop);
+    requestAnimationFrame(this.animate);
   };
 
   public clear() {
@@ -217,10 +243,7 @@ export class Wirecam {
       this.unregisterUpdateCallback(id);
     }
 
-    // 3. Reset scene
-    this.scene.clear();
-
-    // 4. Log if debug is enabled
+    // 3. Log if debug is enabled
     this.logDebug('Wirecam', 'Reset');
   }
 
@@ -228,8 +251,6 @@ export class Wirecam {
     this.stop();
     this.clear();
     document.body.removeChild(this.refIndicator);
-    this.renderer.dispose();
-
     this.logDebug('Wirecam', 'Unmounted');
   }
 
@@ -241,7 +262,6 @@ export class Wirecam {
     this.updateKeyframeDerivedValues();
     this.applyKeyframeBlend();
     this.updateDebugMode();
-    this.render();
     for (const cb of Object.values(this.updateCallbacks)) {
       try {
         cb();
@@ -467,7 +487,6 @@ export class Wirecam {
     this.camera.fov = lerp(prev.fov, next.fov, t);
 
     // 3.3 Update aspect ratio
-    this.renderer.setSize(this.viewportRoi.width, this.viewportRoi.height);
     this.camera.aspect = this.viewportRoi.width / this.viewportRoi.height;
 
     // 3.4 Update projection matrix
@@ -524,7 +543,7 @@ export class Wirecam {
    * @return ID of the callback that can be used for later unregistration
    */
   public registerUpdateCallback(fn: () => void): string {
-    const id = uuidv4();
+    const id = generateUUID();
     this.updateCallbacks[id] = fn;
     return id;
   }
@@ -545,9 +564,5 @@ export class Wirecam {
 
   private logDebug(...msg: Parameters<typeof console.log>): void {
     logDebug(this.settings.debug, 'Wirecam', ...msg);
-  }
-
-  private render() {
-    this.renderer.render(this.scene, this.camera);
   }
 }

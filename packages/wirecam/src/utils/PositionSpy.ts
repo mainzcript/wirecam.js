@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { generateUUID } from './uuid';
 
 const THROTTLE_INTERVAL = 33;
 const SMOOTHING_FACTOR = 2 * THROTTLE_INTERVAL;
@@ -68,7 +68,7 @@ export default class PositionSpy {
    * @param element The HTML element to observe
    */
   constructor(element: HTMLElement) {
-    this.id = uuidv4();
+    this.id = generateUUID();
     this.element = element;
     // Register this instance
     PositionSpy.instances.set(this.id, this);
