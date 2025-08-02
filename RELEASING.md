@@ -1,28 +1,57 @@
-# Releasing Guide
+# Release Guide
 
-## GitHub Actions Workflows
+## Using Changesets
 
-- **Changeset Check:** Every PR to `develop` or `main` must include a changeset if packages are changed. The workflow will fail if missing.
-- **Manual Release:** Maintainers trigger a release manually via GitHub Actions ("Manual Release" workflow) on `main`.
-- **Next Release (Snapshot):** Every push to `main` (except release commits) publishes a snapshot to npm with the `next` tag.
+1. **Add changeset** when making changes:
 
-## Version bump via pnpx changeset version
+   ```bash
+   pnpm changeset add
+   ```
 
-Before triggering a manual release, always run:
+   Follow the prompts to describe your changes and select version bump type.
 
-```sh
-pnpx changeset version
-```
+2. **Apply changesets** when ready to release:
+   ```bash
+   pnpm changeset version
+   ```
+   This bumps versions and generates changelogs.
 
-This updates all relevant `package.json` files and changelogs. Commit and push these changes to `main` before running the manual release workflow.
+## Manual Release Process
 
-## Workflow: develop vs. main
+1. **Apply changesets:**
 
-- On `develop`, only add changesets (with `pnpx changeset`).
-- **Do not run `pnpx changeset version` or create release commits on `develop`.**
-- When merging to `main`, run `pnpx changeset version` to bump versions and generate the release commit.
-- This ensures all changesets are released together and versioning stays consistent.
+   ```bash
+   pnpm changeset version
+   ```
 
-## Branch Protection
+2. **Build the package:**
 
-Only Pull Requests are allowed to merge into `main`. Direct pushes are prohibited. Make sure branch protection rules are enabled in your repository settings.
+   ```bash
+   cd packages/wirecam
+   npm run build
+   ```
+
+3. **Publish to npm:**
+   ```bash
+   npm login  # if not already logged in
+   npm publish
+   ```
+
+## Git Workflow
+
+1. **Make changes** on feature branch
+2. **Add changeset** with `pnpm changeset add`
+3. **Create PR** to `develop`
+4. **Merge to develop**
+5. **When ready to release:** Create PR from `develop` to `main`
+6. **Merge to main**
+7. **Apply changesets** with `pnpm changeset version`
+8. **Release manually** with `npm publish`
+
+## Version Bumping
+
+- **Patch:** Bug fixes (0.0.1 → 0.0.2)
+- **Minor:** New features (0.0.1 → 0.1.0)
+- **Major:** Breaking changes (0.0.1 → 1.0.0)
+
+No complex GitHub Actions, just simple changesets + manual releases.
