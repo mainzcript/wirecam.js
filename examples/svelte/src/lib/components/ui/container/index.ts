@@ -1,5 +1,3 @@
-import Root from "./container.svelte";
+import Root from './container.svelte';
 
-export {
-	Root as Container,
-};
+export { Root as Container };
