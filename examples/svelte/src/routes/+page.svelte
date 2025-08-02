@@ -8,12 +8,12 @@
 
 		if (managedCanvas) {
 			const scene = managedCanvas.getScene();
-			setupScene(scene);
+			return setupScene(scene);
 		}
 	});
 
 	function setupScene(scene: THREE.Scene) {
-		// Add custom 3D objects to the scene
+		// Add 3D objects to the scene
 		const geometry1 = new THREE.BoxGeometry(2, 2, 2);
 		const material1 = new THREE.MeshLambertMaterial({ color: 0xff0000 });
 		const cube = new THREE.Mesh(geometry1, material1);
@@ -52,10 +52,14 @@
 		const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
 		directionalLight.position.set(10, 10, 5);
 		scene.add(directionalLight);
+
+		// return a function to clear the scene
+		return () => {
+			scene.clear();
+		};
 	}
 </script>
 
-<!-- HTML content rendered as overlay -->
 <section class="relative flex min-h-screen items-center justify-center">
 	<W.Keyframe
 		options={{
