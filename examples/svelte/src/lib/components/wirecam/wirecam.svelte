@@ -5,23 +5,13 @@
 	let {
 		ref = $bindable(null),
 		debug = false,
-		backgroundColor = 0x000000,
-		antialias = true,
-		alpha = true, // Transparent background by default
-		pixelRatio = 1,
-		autoStart = true,
 		children,
 		...restProps
 	}: WithElementRef<WirecamRootProps & { children?: unknown }> = $props();
 
 	let wirecamState = $state<WirecamContext>({
 		managedCanvas: undefined,
-		debug,
-		backgroundColor,
-		antialias,
-		alpha,
-		pixelRatio,
-		autoStart
+		debug
 	});
 
 	setWirecamContext(wirecamState);

@@ -57,7 +57,7 @@
 
 <div class="relative isolate">
 	<div class="fixed -z-10 h-screen w-screen">
-		<W.Canvas />
+		<W.Canvas backgroundColor={0x000000} alpha={true} antialias={true} autoStart={true} />
 	</div>
 	<W.Content>
 		<!-- HTML content rendered as overlay -->

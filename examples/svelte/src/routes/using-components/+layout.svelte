@@ -4,6 +4,6 @@
 	let { children } = $props();
 </script>
 
-<W.Root debug={false} backgroundColor={0x000000} alpha={true} antialias={true} autoStart={true}>
+<W.Root debug={false}>
 	{@render children()}
 </W.Root>
