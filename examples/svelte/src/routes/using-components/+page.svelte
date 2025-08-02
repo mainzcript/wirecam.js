@@ -68,8 +68,8 @@
 				>
 					<h1 class="m-0 mb-4 text-5xl font-bold text-white">Welcome to Wirecam.js</h1>
 					<p class="m-0 mb-6 text-xl leading-relaxed text-white/80">
-						Experience the magic of scroll-driven 3D camera control using Threlte. Scroll down to
-						explore each geometric wonder up close.
+						Experience the magic of scroll-driven 3D camera control. Scroll down to explore each
+						geometric wonder up close.
 					</p>
 					<div class="flex items-center justify-center gap-2 text-white/60">
 						<svg

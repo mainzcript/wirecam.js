@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { cn } from '$lib/utils.js';
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount } from 'svelte';
 	import { getWirecamContext, type WirecamCanvasProps } from './context.js';
 	import { ManagedCanvas } from 'wirecam';
 	import * as THREE from 'three';
@@ -73,12 +73,19 @@
 		const torus = new THREE.Mesh(geometry4, material4);
 		torus.position.set(0, 4, 0);
 		scene.add(torus);
-	});
 
-	onDestroy(() => {
-		if (managedCanvas) {
-			managedCanvas.dispose();
-		}
+		const groundGeometry = new THREE.BoxGeometry(20, 0.1, 20);
+		const groundMaterial = new THREE.MeshStandardMaterial({ color: 0xf0f0f0 });
+		const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+		ground.position.set(0, -2, 0);
+		ground.receiveShadow = true;
+		scene.add(ground);
+
+		return () => {
+			if (managedCanvas) {
+				managedCanvas.dispose();
+			}
+		};
 	});
 </script>
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount } from 'svelte';
 	import { getWirecamContext, type WirecamKeyframeProps } from './context.js';
 	import type { WithElementRef } from '$lib/utils.js';
 	import * as THREE from 'three';
@@ -28,13 +28,12 @@
 
 		// Add keyframe to wirecam
 		keyframeId = context.wirecam.addKeyframe(keyframe);
-	});
 
-	onDestroy(() => {
-		if (keyframeId && context.wirecam) {
-			// Remove keyframe from wirecam
-			context.wirecam.removeKeyframe(keyframeId);
-		}
+		return () => {
+			if (keyframeId && context.wirecam) {
+				context.wirecam.removeKeyframe(keyframeId);
+			}
+		};
 	});
 </script>
 
