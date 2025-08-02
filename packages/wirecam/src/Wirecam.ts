@@ -218,13 +218,13 @@ export class Wirecam {
     }
   }
 
-  start() {
+  public start() {
     this.running = true;
     this.animate();
     this.logDebug('Wirecam', 'Started');
   }
 
-  stop() {
+  public stop() {
     this.running = false;
     this.logDebug('Wirecam', 'Stopped');
   }
@@ -515,7 +515,7 @@ export class Wirecam {
     this.refIndicator.style.height = `${diameter}px`;
   }
 
-  updateDebugMode() {
+  public updateDebugMode() {
     // Show/hide the reference indicator (red circle) based on debug mode
     this.refIndicator.style.display = this.settings.debug ? 'block' : 'none';
 
