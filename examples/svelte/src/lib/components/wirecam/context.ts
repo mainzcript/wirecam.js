@@ -43,9 +43,10 @@ export function setWirecamContext(config: WirecamContext): WirecamContext {
 	return config;
 }
 
-export function getWirecamContext(name = 'This component') {
+export function getWirecamContext(name?: string) {
 	if (!hasContext(WIRECAM_CONTEXT)) {
-		throw new Error(`${name} must be used within a <W.Root> component`);
+		const componentName = name || 'This component';
+		throw new Error(`${componentName} must be used within a <W.Root> component`);
 	}
 	return getContext<ReturnType<typeof setWirecamContext>>(WIRECAM_CONTEXT);
 }
