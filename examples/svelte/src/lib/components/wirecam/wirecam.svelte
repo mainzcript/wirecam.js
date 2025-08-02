@@ -4,16 +4,18 @@
 
 	let {
 		ref = $bindable(null),
+		debug = false,
 		children,
 		...restProps
-	}: WithElementRef<{ children?: unknown }> = $props();
+	}: WithElementRef<{ debug?: boolean; children?: unknown }> = $props();
 
 	let wirecamState = $state<WirecamContext>({
 		managedCanvas: undefined,
 		scene: undefined,
 		camera: undefined,
 		renderer: undefined,
-		wirecam: undefined
+		wirecam: undefined,
+		debug
 	});
 
 	setWirecamContext(wirecamState);

@@ -13,7 +13,6 @@
 		antialias = true,
 		alpha = true,
 		pixelRatio = 1,
-		debug = false,
 		autoStart = true,
 		...restProps
 	}: WithElementRef<WirecamCanvasProps> = $props();
@@ -30,7 +29,7 @@
 		managedCanvas = new ManagedCanvas({
 			container: ref,
 			autoStart,
-			debug,
+			debug: context.debug,
 			backgroundColor,
 			antialias,
 			alpha

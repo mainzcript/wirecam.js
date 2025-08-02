@@ -115,6 +115,9 @@ export class Wirecam {
       this.start();
     }
 
+    // Initialize debug mode to show/hide indicators based on settings
+    this.updateDebugMode();
+
     this.logDebug('Wirecam', 'Initialized');
   }
 
@@ -513,6 +516,10 @@ export class Wirecam {
   }
 
   updateDebugMode() {
+    // Show/hide the reference indicator (red circle) based on debug mode
+    this.refIndicator.style.display = this.settings.debug ? 'block' : 'none';
+
+    // Remove all keyframe debug objects from scene and reset element styles
     for (const id in this.keyframes) {
       const kf = this.keyframes[id];
       this.scene.remove(kf.worldTargetPosIndicator);
@@ -520,8 +527,9 @@ export class Wirecam {
       kf.ref.style.backgroundColor = '';
       kf.ref.style.outline = '';
     }
+
     if (this.settings.debug) {
-      this.refIndicator.style.display = 'block';
+      // Add debug objects for active keyframes: yellow spheres (worldTargetPos) and magenta spheres (lookAt)
       for (const kf of [
         this.currentKeyframes?.prev,
         this.currentKeyframes?.next,
@@ -529,11 +537,10 @@ export class Wirecam {
         if (!kf) continue;
         this.scene.add(kf.worldTargetPosIndicator);
         this.scene.add(kf.lookAtIndicator);
+        // Highlight active HTML elements with green background and outline
         kf.ref.style.backgroundColor = 'rgba(0, 255, 0, 0.25)';
         kf.ref.style.outline = '2px solid rgb(0, 255, 0)';
       }
-    } else {
-      this.refIndicator.style.display = 'none';
     }
   }
 

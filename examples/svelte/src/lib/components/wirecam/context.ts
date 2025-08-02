@@ -10,7 +10,6 @@ export type WirecamCanvasProps = {
 	antialias?: boolean;
 	alpha?: boolean;
 	pixelRatio?: number;
-	debug?: boolean;
 	autoStart?: boolean;
 } & WithElementRef<HTMLAttributes<HTMLDivElement>>;
 
@@ -26,6 +25,7 @@ export type WirecamContext = {
 	camera: THREE.PerspectiveCamera | undefined;
 	renderer: THREE.WebGLRenderer | undefined;
 	wirecam: Wirecam | undefined;
+	debug: boolean;
 };
 
 export function setWirecamContext(config: WirecamContext): WirecamContext {

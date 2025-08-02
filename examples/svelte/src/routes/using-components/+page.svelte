@@ -3,7 +3,7 @@
 	import * as THREE from 'three';
 </script>
 
-<W.Root>
+<W.Root debug={true}>
 	<div class="relative isolate">
 		<div class="fixed -z-10 h-screen w-screen">
 			<W.Canvas />
@@ -13,9 +13,9 @@
 			<section class="relative flex min-h-screen items-center justify-center">
 				<W.Keyframe
 					options={{
-						cameraPos: new THREE.Vector3(0, 2, 8),
-						worldTargetPos: new THREE.Vector3(0, 0, 0),
-						worldTargetRadius: 4
+						cameraPos: new THREE.Vector3(0, 2, 20),
+						worldTargetPos: new THREE.Vector3(0, 2, 0),
+						worldTargetRadius: 6
 					}}
 					class="absolute inset-0"
 				></W.Keyframe>
