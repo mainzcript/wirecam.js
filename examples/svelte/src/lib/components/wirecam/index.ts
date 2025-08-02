@@ -2,10 +2,10 @@ import Root from './wirecam.svelte';
 import Canvas from './wirecam-canvas.svelte';
 import Content from './wirecam-content.svelte';
 import Keyframe from './wirecam-keyframe.svelte';
-import Default from './wirecam-default.svelte';
+import Viewport from './wirecam-viewport.svelte';
 import { getWirecamContext } from './context.js';
 
-export { Root, Canvas, Content, Keyframe, Default, getWirecamContext };
+export { Root, Canvas, Content, Keyframe, Viewport, getWirecamContext };
 
 // Create namespace export
 export const W = {
@@ -13,7 +13,7 @@ export const W = {
 	Canvas,
 	Content,
 	Keyframe,
-	Default
+	Viewport
 };
 
 // Alias for better naming

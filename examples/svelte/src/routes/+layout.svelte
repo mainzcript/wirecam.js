@@ -6,7 +6,7 @@
 </script>
 
 <div class="isolate min-h-screen bg-gradient-to-r from-blue-600 via-indigo-600 to-pink-600">
-	<W.Default debug={false}>
+	<W.Viewport debug={false}>
 		{@render children()}
-	</W.Default>
+	</W.Viewport>
 </div>

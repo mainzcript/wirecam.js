@@ -4,7 +4,7 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { WithElementRef } from '$lib/utils.js';
 
-	export type WirecamDefaultProps = {
+	export type WirecamViewportProps = {
 		debug?: boolean;
 		backgroundColor?: THREE.ColorRepresentation;
 		antialias?: boolean;
@@ -24,7 +24,7 @@
 		autoStart = true,
 		children,
 		...restProps
-	}: WirecamDefaultProps = $props();
+	}: WirecamViewportProps = $props();
 
 	const baseStyle = 'isolate relative h-full w-full';
 </script>
