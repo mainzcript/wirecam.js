@@ -9,11 +9,6 @@
 	let {
 		class: className = '',
 		ref = $bindable(null),
-		backgroundColor = 0x000000,
-		antialias = true,
-		alpha = true,
-		pixelRatio = 1,
-		autoStart = true,
 		...restProps
 	}: WithElementRef<WirecamCanvasProps> = $props();
 
@@ -28,11 +23,12 @@
 		// Create ManagedCanvas
 		managedCanvas = new ManagedCanvas({
 			container: ref,
-			autoStart,
+			autoStart: context.autoStart,
 			debug: context.debug,
-			backgroundColor,
-			antialias,
-			alpha
+			backgroundColor: context.backgroundColor,
+			antialias: context.antialias,
+			alpha: context.alpha,
+			pixelRatio: context.pixelRatio
 		});
 
 		// Update context

@@ -5,12 +5,17 @@ import type { ManagedCanvas, Wirecam } from 'wirecam';
 import type { Keyframe } from 'wirecam';
 import * as THREE from 'three';
 
-export type WirecamCanvasProps = {
+export type WirecamRootProps = {
+	debug?: boolean;
 	backgroundColor?: THREE.ColorRepresentation;
 	antialias?: boolean;
 	alpha?: boolean;
 	pixelRatio?: number;
 	autoStart?: boolean;
+} & WithElementRef<HTMLAttributes<HTMLDivElement>>;
+
+export type WirecamCanvasProps = {
+	class?: string;
 } & WithElementRef<HTMLAttributes<HTMLDivElement>>;
 
 export type WirecamKeyframeProps = {
@@ -26,6 +31,11 @@ export type WirecamContext = {
 	renderer: THREE.WebGLRenderer | undefined;
 	wirecam: Wirecam | undefined;
 	debug: boolean;
+	backgroundColor: THREE.ColorRepresentation;
+	antialias: boolean;
+	alpha: boolean;
+	pixelRatio: number;
+	autoStart: boolean;
 };
 
 export function setWirecamContext(config: WirecamContext): WirecamContext {

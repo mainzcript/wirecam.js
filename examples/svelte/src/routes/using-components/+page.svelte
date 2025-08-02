@@ -3,7 +3,7 @@
 	import * as THREE from 'three';
 </script>
 
-<W.Root debug={true}>
+<W.Root debug={true} backgroundColor={0x000000} alpha={true} antialias={true} autoStart={true}>
 	<div class="relative isolate">
 		<div class="fixed -z-10 h-screen w-screen">
 			<W.Canvas />

@@ -45,7 +45,13 @@ export class ManagedCanvas {
       alpha,
     });
     this.renderer.setPixelRatio(pixelRatio);
-    this.renderer.setClearColor(backgroundColor);
+    if (alpha) {
+      // Transparent background
+      this.renderer.setClearColor(backgroundColor, 0);
+    } else {
+      // Solid background
+      this.renderer.setClearColor(backgroundColor);
+    }
     this.container.appendChild(this.renderer.domElement);
 
     // Create scene
