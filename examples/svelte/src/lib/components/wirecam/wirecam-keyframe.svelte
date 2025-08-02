@@ -15,7 +15,10 @@
 	let keyframeId: string | null = null;
 
 	onMount(() => {
-		if (!ref || !context.wirecam) return;
+		if (!ref || !context.managedCanvas) return;
+
+		const wirecam = context.managedCanvas.getWirecam();
+		if (!wirecam) return;
 
 		// Create keyframe with the element reference and default values
 		const keyframe = {
@@ -27,11 +30,14 @@
 		};
 
 		// Add keyframe to wirecam
-		keyframeId = context.wirecam.addKeyframe(keyframe);
+		keyframeId = wirecam.addKeyframe(keyframe);
 
 		return () => {
-			if (keyframeId && context.wirecam) {
-				context.wirecam.removeKeyframe(keyframeId);
+			if (keyframeId && context.managedCanvas) {
+				const wirecam = context.managedCanvas.getWirecam();
+				if (wirecam) {
+					wirecam.removeKeyframe(keyframeId);
+				}
 			}
 		};
 	});

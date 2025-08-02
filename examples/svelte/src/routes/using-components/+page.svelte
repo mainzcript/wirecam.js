@@ -4,9 +4,10 @@
 	import { onMount } from 'svelte';
 
 	onMount(() => {
-		const { scene } = useWirecam();
+		const { managedCanvas } = useWirecam();
 
-		if (scene) {
+		if (managedCanvas) {
+			const scene = managedCanvas.getScene();
 			setupScene(scene);
 		}
 	});
@@ -37,8 +38,15 @@
 		torus.position.set(0, 4, 0);
 		scene.add(torus);
 
+		const groundGeometry = new THREE.BoxGeometry(20, 0.1, 20);
+		const groundMaterial = new THREE.MeshStandardMaterial({ color: 0xf0f0f0 });
+		const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+		ground.position.set(0, -2, 0);
+		ground.receiveShadow = true;
+		scene.add(ground);
+
 		// Add lighting
-		const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+		const ambientLight = new THREE.AmbientLight(0x404040, 2);
 		scene.add(ambientLight);
 
 		const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);

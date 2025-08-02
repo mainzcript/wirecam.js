@@ -16,10 +16,6 @@
 
 	let wirecamState = $state<WirecamContext>({
 		managedCanvas: undefined,
-		scene: undefined,
-		camera: undefined,
-		renderer: undefined,
-		wirecam: undefined,
 		debug,
 		backgroundColor,
 		antialias,

@@ -1,7 +1,7 @@
 import { getContext, hasContext, setContext } from 'svelte';
 import type { HTMLAttributes } from 'svelte/elements';
 import type { WithElementRef } from '$lib/utils.js';
-import type { ManagedCanvas, Wirecam } from 'wirecam';
+import type { ManagedCanvas } from 'wirecam';
 import type { Keyframe } from 'wirecam';
 import * as THREE from 'three';
 
@@ -26,10 +26,6 @@ const WIRECAM_CONTEXT = Symbol('WIRECAM_CONTEXT');
 
 export type WirecamContext = {
 	managedCanvas: ManagedCanvas | undefined;
-	scene: THREE.Scene | undefined;
-	camera: THREE.PerspectiveCamera | undefined;
-	renderer: THREE.WebGLRenderer | undefined;
-	wirecam: Wirecam | undefined;
 	debug: boolean;
 	backgroundColor: THREE.ColorRepresentation;
 	antialias: boolean;
