@@ -87,4 +87,6 @@
 	});
 </script>
 
-<div bind:this={ref} {...restProps} class={cn(baseStyle, className)}></div>
+<div bind:this={ref} {...restProps} class={cn(baseStyle, className)}>
+	<!-- Canvas will be rendered here -->
+</div>

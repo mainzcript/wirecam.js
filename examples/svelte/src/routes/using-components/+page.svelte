@@ -10,7 +10,7 @@
 		</div>
 		<W.Content>
 			<!-- HTML content rendered as overlay -->
-			<section class="flex min-h-screen items-center justify-center">
+			<section class="relative flex min-h-screen items-center justify-center">
 				<W.Keyframe
 					options={{
 						cameraPos: new THREE.Vector3(0, 2, 8),
