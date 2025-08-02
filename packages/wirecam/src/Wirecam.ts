@@ -306,7 +306,13 @@ export class Wirecam {
     const hackedKeyframes = this.keyframes;
     for (const id in hackedKeyframes) {
       const kf = hackedKeyframes[id];
-      if (!kf.ref.isConnected || kf.refRadius <= 0) {
+      const computedStyle = window.getComputedStyle(kf.ref);
+      const isVisible =
+        computedStyle.display !== 'none' &&
+        computedStyle.visibility !== 'hidden' &&
+        computedStyle.opacity !== '0';
+
+      if (!kf.ref.isConnected || kf.refRadius <= 0 || !isVisible) {
         kf.refOffset = { x: Infinity, y: Infinity };
       }
     }
