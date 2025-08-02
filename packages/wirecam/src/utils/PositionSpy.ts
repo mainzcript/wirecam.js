@@ -129,6 +129,13 @@ export default class PositionSpy {
     const screenArea = viewportWidth * viewportHeight;
     const elemArea = rect.width * rect.height;
 
+    // Check if element is actually visible (not hidden by CSS)
+    const computedStyle = window.getComputedStyle(this.element);
+    const isVisible =
+      computedStyle.display !== 'none' &&
+      computedStyle.visibility !== 'hidden' &&
+      computedStyle.opacity !== '0';
+
     // Calculate visible dimensions by clamping to viewport
     const visibleWidth = Math.max(
       0,
@@ -145,8 +152,8 @@ export default class PositionSpy {
       y: rect.top + rect.height / 2,
       width: rect.width,
       height: rect.height,
-      visibleRatio: elemArea > 0 ? visibleArea / elemArea : 0,
-      screenRatio: screenArea > 0 ? visibleArea / screenArea : 0,
+      visibleRatio: isVisible && elemArea > 0 ? visibleArea / elemArea : 0,
+      screenRatio: isVisible && screenArea > 0 ? visibleArea / screenArea : 0,
     };
   }
 
