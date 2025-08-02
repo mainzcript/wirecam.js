@@ -26,6 +26,9 @@ export type Keyframe = {
   /** Easing dampens the camera movement near the keyframe */
   easeIn: boolean;
   easeOut: boolean;
+
+  /** Optional callback to be called when the live values are updated */
+  onUpdate?: (liveValues: KeyframeLiveValues) => void;
 };
 
 export type LinkedKeyframe = Keyframe & {
@@ -46,5 +49,4 @@ export type KeyframeLiveValues = {
 export type LiveKeyframe = Partial<LinkedKeyframe> & {
   ref: HTMLElement; // For performance reasons, we ensure that the reference is stored as an HTMLElement
   liveValues: KeyframeLiveValues; // The live values of the keyframe, updated in real-time
-  onUpdate?: (liveValues: KeyframeLiveValues) => void; // Optional callback to be called when the live values are updated
 };

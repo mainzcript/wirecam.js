@@ -5,9 +5,9 @@ import { ease, lerp } from './utils/math';
 import { logDebug } from './utils/logDebug';
 import PositionSpy, { type ROI } from './utils/PositionSpy';
 import { radToDeg } from 'three/src/math/MathUtils.js';
-import { v4 as uuidv4 } from 'uuid';
+import { generateUUID } from './utils/uuid';
 
-type ControllerKeyframe = LiveKeyframe & {
+type WirecamKeyframe = LiveKeyframe & {
   posSpy: PositionSpy;
   refOffset: {
     x: number;
@@ -22,12 +22,20 @@ type ControllerKeyframe = LiveKeyframe & {
   lookAtIndicator: THREE.Mesh;
 };
 
-type CameraControllerSettings = {
+type WirecamSettings = {
   debug: boolean;
 };
 
-type CameraControllerDefaults = {
+type WirecamDefaults = {
   keyframe: LinkedKeyframe;
+};
+
+type WirecamOptions = {
+  renderer: THREE.WebGLRenderer;
+  scene: THREE.Scene;
+  camera: THREE.PerspectiveCamera;
+  autoStart?: boolean;
+  debug?: boolean;
 };
 
 /**
@@ -37,11 +45,11 @@ type CameraControllerDefaults = {
  * based on the defined keyframes. It enables adding,
  * removing, and updating keyframes that control the camera movement.
  */
-export class CameraController {
-  public settings: CameraControllerSettings = {
+export class Wirecam {
+  public settings: WirecamSettings = {
     debug: false,
   };
-  public defaults: CameraControllerDefaults = {
+  public defaults: WirecamDefaults = {
     keyframe: {
       ref: document.body,
       cameraPos: new THREE.Vector3(0, 0, 0),
@@ -52,10 +60,9 @@ export class CameraController {
       easeOut: true,
     },
   };
-  public readonly scene: THREE.Scene;
+  private readonly scene: THREE.Scene;
   private readonly refIndicator: HTMLDivElement;
-  private readonly renderer: THREE.WebGLRenderer;
-  public readonly camera: THREE.PerspectiveCamera;
+  private readonly camera: THREE.PerspectiveCamera;
   private readonly viewportPosSpy: PositionSpy;
   private viewportRoi: ROI = {
     width: 0,
@@ -65,25 +72,30 @@ export class CameraController {
     visibleRatio: 0,
     screenRatio: 0,
   };
-  private keyframes: { [id: string]: ControllerKeyframe } = {};
+  private keyframes: { [id: string]: WirecamKeyframe } = {};
   private currentKeyframes: {
-    prev: ControllerKeyframe;
-    next: ControllerKeyframe;
+    prev: WirecamKeyframe;
+    next: WirecamKeyframe;
     blendFactor: number;
   } | null = null;
   private running = false;
   private updateCallbacks: { [id: string]: () => void } = {};
 
-  constructor(container: HTMLElement, autoStart: boolean = true) {
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setClearColor(0x000000, 0);
-    container.appendChild(renderer.domElement);
+  constructor(options: WirecamOptions) {
+    const {
+      renderer,
+      scene,
+      camera,
+      autoStart = true,
+      debug = false,
+    } = options;
 
-    this.renderer = renderer;
+    this.scene = scene;
+    this.camera = camera;
 
-    this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-    this.viewportPosSpy = new PositionSpy(container);
+    this.settings.debug = debug;
+
+    this.viewportPosSpy = new PositionSpy(renderer.domElement);
 
     const refIndicator = document.createElement('div');
     Object.assign(refIndicator.style, {
@@ -103,7 +115,24 @@ export class CameraController {
       this.start();
     }
 
-    this.logDebug('CameraController', 'Initialized');
+    // Initialize debug mode to show/hide indicators based on settings
+    this.updateDebugMode();
+
+    this.logDebug('Wirecam', 'Initialized');
+  }
+
+  /**
+   * Get the Three.js scene.
+   */
+  public getScene(): THREE.Scene {
+    return this.scene;
+  }
+
+  /**
+   * Get the Three.js camera.
+   */
+  public getCamera(): THREE.PerspectiveCamera {
+    return this.camera;
   }
 
   /**
@@ -129,7 +158,7 @@ export class CameraController {
     keyframe.ref = keyframe.ref as HTMLElement;
 
     // 2. Generate a unique ID for the keyframe
-    const id = uuidv4();
+    const id = generateUUID();
 
     // 3. Create yellow sphere
     const sphereGeometry = new THREE.SphereGeometry(
@@ -169,9 +198,9 @@ export class CameraController {
       fov: 0,
       worldTargetPosIndicator: sphere,
       lookAtIndicator: indicator,
-    } as ControllerKeyframe;
+    } as WirecamKeyframe;
 
-    this.logDebug('CameraController', 'Keyframe added', id);
+    this.logDebug('Wirecam', 'Keyframe added', id);
 
     return id;
   }
@@ -183,27 +212,27 @@ export class CameraController {
       this.scene.remove(kf.lookAtIndicator);
       kf.posSpy.dispose();
       delete this.keyframes[id];
-      this.logDebug('CameraController', 'Keyframe removed', id);
+      this.logDebug('Wirecam', 'Keyframe removed', id);
     } else {
-      console.warn('CameraController', 'Keyframe not found', id);
+      console.warn('Wirecam', 'Keyframe not found', id);
     }
   }
 
-  start() {
+  public start() {
     this.running = true;
-    this.loop();
-    this.logDebug('CameraController', 'Started');
+    this.animate();
+    this.logDebug('Wirecam', 'Started');
   }
 
-  stop() {
+  public stop() {
     this.running = false;
-    this.logDebug('CameraController', 'Stopped');
+    this.logDebug('Wirecam', 'Stopped');
   }
 
-  private loop = () => {
+  private animate = () => {
     if (!this.running) return;
     this.update();
-    requestAnimationFrame(this.loop);
+    requestAnimationFrame(this.animate);
   };
 
   public clear() {
@@ -217,20 +246,15 @@ export class CameraController {
       this.unregisterUpdateCallback(id);
     }
 
-    // 3. Reset scene
-    this.scene.clear();
-
-    // 4. Log if debug is enabled
-    this.logDebug('CameraController', 'Reset');
+    // 3. Log if debug is enabled
+    this.logDebug('Wirecam', 'Reset');
   }
 
   public dispose() {
     this.stop();
     this.clear();
     document.body.removeChild(this.refIndicator);
-    this.renderer.dispose();
-
-    this.logDebug('CameraController', 'Unmounted');
+    this.logDebug('Wirecam', 'Unmounted');
   }
 
   private update(): void {
@@ -241,7 +265,6 @@ export class CameraController {
     this.updateKeyframeDerivedValues();
     this.applyKeyframeBlend();
     this.updateDebugMode();
-    this.render();
     for (const cb of Object.values(this.updateCallbacks)) {
       try {
         cb();
@@ -283,7 +306,7 @@ export class CameraController {
     const hackedKeyframes = this.keyframes;
     for (const id in hackedKeyframes) {
       const kf = hackedKeyframes[id];
-      if (!kf.ref.isConnected || kf.refRadius <= 0) {
+      if (!kf.posSpy.isConnected()) {
         kf.refOffset = { x: Infinity, y: Infinity };
       }
     }
@@ -294,8 +317,8 @@ export class CameraController {
     });
 
     // 4. Determine current keyframes
-    let prevKeyframe: ControllerKeyframe = sortedKeyframes[0];
-    let nextKeyframe: ControllerKeyframe | null = null;
+    let prevKeyframe: WirecamKeyframe = sortedKeyframes[0];
+    let nextKeyframe: WirecamKeyframe | null = null;
     sortedKeyframes.forEach((keyframe) => {
       if (
         keyframe.refOffset.y <= 0 &&
@@ -317,7 +340,7 @@ export class CameraController {
       nextKeyframe = prevKeyframe;
     }
     if (prevKeyframe.refOffset.y !== nextKeyframe.refOffset.y) {
-      nextKeyframe = nextKeyframe as ControllerKeyframe;
+      nextKeyframe = nextKeyframe as WirecamKeyframe;
       const total =
         Math.abs(prevKeyframe.refOffset.y) + Math.abs(nextKeyframe.refOffset.y);
       const tRaw = Math.abs(prevKeyframe.refOffset.y) / total;
@@ -467,7 +490,6 @@ export class CameraController {
     this.camera.fov = lerp(prev.fov, next.fov, t);
 
     // 3.3 Update aspect ratio
-    this.renderer.setSize(this.viewportRoi.width, this.viewportRoi.height);
     this.camera.aspect = this.viewportRoi.width / this.viewportRoi.height;
 
     // 3.4 Update projection matrix
@@ -493,7 +515,11 @@ export class CameraController {
     this.refIndicator.style.height = `${diameter}px`;
   }
 
-  updateDebugMode() {
+  public updateDebugMode() {
+    // Show/hide the reference indicator (red circle) based on debug mode
+    this.refIndicator.style.display = this.settings.debug ? 'block' : 'none';
+
+    // Remove all keyframe debug objects from scene and reset element styles
     for (const id in this.keyframes) {
       const kf = this.keyframes[id];
       this.scene.remove(kf.worldTargetPosIndicator);
@@ -501,8 +527,9 @@ export class CameraController {
       kf.ref.style.backgroundColor = '';
       kf.ref.style.outline = '';
     }
+
     if (this.settings.debug) {
-      this.refIndicator.style.display = 'block';
+      // Add debug objects for active keyframes: yellow spheres (worldTargetPos) and magenta spheres (lookAt)
       for (const kf of [
         this.currentKeyframes?.prev,
         this.currentKeyframes?.next,
@@ -510,11 +537,10 @@ export class CameraController {
         if (!kf) continue;
         this.scene.add(kf.worldTargetPosIndicator);
         this.scene.add(kf.lookAtIndicator);
+        // Highlight active HTML elements with green background and outline
         kf.ref.style.backgroundColor = 'rgba(0, 255, 0, 0.25)';
         kf.ref.style.outline = '2px solid rgb(0, 255, 0)';
       }
-    } else {
-      this.refIndicator.style.display = 'none';
     }
   }
 
@@ -524,7 +550,7 @@ export class CameraController {
    * @return ID of the callback that can be used for later unregistration
    */
   public registerUpdateCallback(fn: () => void): string {
-    const id = uuidv4();
+    const id = generateUUID();
     this.updateCallbacks[id] = fn;
     return id;
   }
@@ -537,17 +563,13 @@ export class CameraController {
     if (!id) return;
     if (this.updateCallbacks[id]) {
       delete this.updateCallbacks[id];
-      this.logDebug('CameraController', 'Update callback unregistered', id);
+      this.logDebug('Wirecam', 'Update callback unregistered', id);
     } else {
-      console.warn('CameraController', 'Update callback not found', id);
+      console.warn('Wirecam', 'Update callback not found', id);
     }
   }
 
   private logDebug(...msg: Parameters<typeof console.log>): void {
-    logDebug(this.settings.debug, 'CameraController', ...msg);
-  }
-
-  private render() {
-    this.renderer.render(this.scene, this.camera);
+    logDebug(this.settings.debug, 'Wirecam', ...msg);
   }
 }

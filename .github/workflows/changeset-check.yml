@@ -1,0 +1,30 @@
+name: Changeset Check
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+
+jobs:
+  check-changeset:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for package changes
+        id: package_changes
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep '^packages/' || true)
+          echo "changed_files=$CHANGED" >> $GITHUB_OUTPUT
+          if [ -z "$CHANGED" ]; then
+            echo 'No changes in packages—nothing to do.'
+            exit 0
+          fi
+      - name: Check for changeset
+        if: steps.package_changes.outputs.changed_files != ''
+        run: |
+          if [ -z "$(ls .changeset/*.md 2>/dev/null)" ]; then
+            echo '❌ No changeset found! Please add a changeset using pnpx changeset.'
+            exit 1
+          fi
