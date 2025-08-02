@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { cn } from '$lib/utils.js';
 	import { onMount, onDestroy } from 'svelte';
 	import { getWirecamContext, type WirecamCanvasProps } from './context.js';
 	import { ManagedCanvas } from 'wirecam';
@@ -6,15 +7,18 @@
 	import type { WithElementRef } from '$lib/utils.js';
 
 	let {
+		class: className = '',
 		ref = $bindable(null),
 		backgroundColor = 0x000000,
 		antialias = true,
 		alpha = true,
-		pixelRatio = window.devicePixelRatio,
+		pixelRatio = 1,
 		debug = false,
 		autoStart = true,
 		...restProps
 	}: WithElementRef<WirecamCanvasProps> = $props();
+
+	const baseStyle = 'w-full h-full';
 
 	const context = getWirecamContext('W.Canvas');
 	let managedCanvas: ManagedCanvas | undefined;
@@ -29,8 +33,7 @@
 			debug,
 			backgroundColor,
 			antialias,
-			alpha,
-			pixelRatio
+			alpha
 		});
 
 		// Update context
@@ -84,4 +87,4 @@
 	});
 </script>
 
-<div bind:this={ref} {...restProps}></div>
+<div bind:this={ref} {...restProps} class={cn(baseStyle, className)}></div>
