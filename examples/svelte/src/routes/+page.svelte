@@ -104,7 +104,7 @@
 				worldTargetPos: new THREE.Vector3(-4, 0, 0),
 				worldTargetRadius: 1.25
 			}}
-			class="order-1 min-h-32 md:hidden"
+			class="order-1 min-h-[400px] md:hidden"
 		></W.Keyframe>
 		<div class="order-2 flex items-center justify-center">
 			<div
@@ -123,7 +123,7 @@
 				worldTargetPos: new THREE.Vector3(-4, 0, 0),
 				worldTargetRadius: 1.25
 			}}
-			class="order-3 min-h-32"
+			class="order-3 min-h-[400px]"
 		></W.Keyframe>
 	</Container>
 </section>
@@ -136,7 +136,7 @@
 				worldTargetPos: new THREE.Vector3(0, 0, 0),
 				worldTargetRadius: 1.5
 			}}
-			class="order-1 min-h-32 md:hidden"
+			class="order-1 min-h-[400px] md:hidden"
 		></W.Keyframe>
 		<div class="order-2 flex items-center justify-center">
 			<div
@@ -155,7 +155,7 @@
 				worldTargetPos: new THREE.Vector3(0, 0, 0),
 				worldTargetRadius: 1.5
 			}}
-			class="order-3 min-h-32"
+			class="order-3 min-h-[400px]"
 		></W.Keyframe>
 	</Container>
 </section>
@@ -168,7 +168,7 @@
 				worldTargetPos: new THREE.Vector3(4, 0, 0),
 				worldTargetRadius: 1.5
 			}}
-			class="order-1 min-h-32 md:hidden"
+			class="order-1 min-h-[400px] md:hidden"
 		></W.Keyframe>
 		<div class="order-2 flex items-center justify-center">
 			<div
@@ -187,7 +187,7 @@
 				worldTargetPos: new THREE.Vector3(4, 0, 0),
 				worldTargetRadius: 1.5
 			}}
-			class="order-3 min-h-32"
+			class="order-3 min-h-[400px]"
 		></W.Keyframe>
 	</Container>
 </section>
@@ -200,7 +200,7 @@
 				worldTargetPos: new THREE.Vector3(0, 4, 0),
 				worldTargetRadius: 2
 			}}
-			class="order-1 min-h-32 md:hidden"
+			class="order-1 min-h-[400px] md:hidden"
 		></W.Keyframe>
 		<div class="order-2 flex items-center justify-center">
 			<div
@@ -219,7 +219,7 @@
 				worldTargetPos: new THREE.Vector3(0, 4, 0),
 				worldTargetRadius: 2
 			}}
-			class="order-3 min-h-32"
+			class="order-3 min-h-[400px]"
 		></W.Keyframe>
 	</Container>
 </section>
