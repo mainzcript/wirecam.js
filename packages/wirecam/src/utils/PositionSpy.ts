@@ -51,6 +51,7 @@ export default class PositionSpy {
   private targetRoi: ROI = defaultRoi;
   private currentRoi: ROI = defaultRoi;
   private lastFrameTime: number = 0;
+  private isConnectedValue: boolean = true;
 
   // === Static manager properties ===
   private static instances = new Map<string, PositionSpy>();
@@ -110,6 +111,14 @@ export default class PositionSpy {
   }
 
   /**
+   * isConnected: returns whether the element is visible and connected.
+   * @returns Boolean indicating if the element is visible (not animated).
+   */
+  public isConnected(): boolean {
+    return this.isConnectedValue;
+  }
+
+  /**
    * Dispose: removes this instance from tracking and stops global tracking if no instances remain.
    */
   public dispose(): void {
@@ -129,6 +138,17 @@ export default class PositionSpy {
     const screenArea = viewportWidth * viewportHeight;
     const elemArea = rect.width * rect.height;
 
+    // Check if element is actually visible (not hidden by CSS)
+    const computedStyle = window.getComputedStyle(this.element);
+    const isVisible =
+      computedStyle.display !== 'none' &&
+      computedStyle.visibility !== 'hidden' &&
+      computedStyle.opacity !== '0' &&
+      this.element.isConnected;
+
+    // Update the non-animated isConnected value
+    this.isConnectedValue = isVisible;
+
     // Calculate visible dimensions by clamping to viewport
     const visibleWidth = Math.max(
       0,
@@ -145,8 +165,8 @@ export default class PositionSpy {
       y: rect.top + rect.height / 2,
       width: rect.width,
       height: rect.height,
-      visibleRatio: elemArea > 0 ? visibleArea / elemArea : 0,
-      screenRatio: screenArea > 0 ? visibleArea / screenArea : 0,
+      visibleRatio: isVisible && elemArea > 0 ? visibleArea / elemArea : 0,
+      screenRatio: isVisible && screenArea > 0 ? visibleArea / screenArea : 0,
     };
   }
 

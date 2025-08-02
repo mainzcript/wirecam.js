@@ -217,12 +217,12 @@ new Inspector(document: Document, wirecam: Wirecam, debug?: boolean)
 ```typescript
 interface Keyframe {
   ref: string | HTMLElement; // HTML element or CSS selector
-  cameraPos?: THREE.Vector3; // Camera position
-  cameraUp?: THREE.Vector3; // Camera up vector
-  worldTargetPos?: THREE.Vector3; // Target point in 3D scene
-  worldTargetRadius?: number; // Radius of the target object
-  easeIn?: boolean; // Easing when fading in
-  easeOut?: boolean; // Easing when fading out
+  cameraPos: THREE.Vector3; // Camera position
+  cameraUp: THREE.Vector3; // Camera up vector
+  worldTargetPos: THREE.Vector3; // Target point in 3D scene
+  worldTargetRadius: number; // Radius of the target object
+  easeIn: boolean; // Easing when fading in
+  easeOut: boolean; // Easing when fading out
   onUpdate?: (liveValues: KeyframeLiveValues) => void; // Update callback
 }
 
