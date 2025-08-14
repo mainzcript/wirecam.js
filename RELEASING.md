@@ -1,8 +1,13 @@
 # Release Guide
 
-## Using Changesets
+## Automated Release Workflow
 
-1. **Add changeset** when making changes:
+This project uses an automated release process with Changesets and GitHub Actions for Git-Flow (develop → main → develop).
+
+## Development Workflow
+
+1. **Make changes** on feature branch
+2. **Add changeset** when making changes:
 
    ```bash
    pnpm changeset add
@@ -10,43 +15,23 @@
 
    Follow the prompts to describe your changes and select version bump type.
 
-2. **Apply changesets** when ready to release:
-   ```bash
-   pnpm changeset version
-   ```
-   This bumps versions and generates changelogs.
-
-## Manual Release Process
-
-1. **Apply changesets:**
-
-   ```bash
-   pnpm changeset version
-   ```
-
-2. **Build the package:**
-
-   ```bash
-   cd packages/wirecam
-   npm run build
-   ```
-
-3. **Publish to npm:**
-   ```bash
-   npm login  # if not already logged in
-   npm publish
-   ```
-
-## Git Workflow
-
-1. **Make changes** on feature branch
-2. **Add changeset** with `pnpm changeset add`
 3. **Create PR** to `develop`
-4. **Merge to develop**
-5. **When ready to release:** Create PR from `develop` to `main`
-6. **Merge to main**
-7. **Apply changesets** with `pnpm changeset version`
-8. **Release manually** with `npm publish`
+4. **Merge to develop** (Changeset validation runs automatically)
+
+## Release Process
+
+1. **When ready to release:** Create PR from `develop` to `main`
+2. **Merge to main** - This triggers the automated release process:
+   - Version bump & changelog generation based on consumed `.changeset` files
+   - Git tags for all affected packages
+   - Publish all changed packages to npm
+   - Automatic sync PR from `main` back to `develop`
+
+## Manual Changeset Management
+
+- **Add changeset:** `pnpm changeset add`
+- **Check changeset status:** `pnpm changeset status`
+- **Preview version changes:** `pnpm changeset version --dry-run`
 
 ## Version Bumping
 
@@ -54,4 +39,13 @@
 - **Minor:** New features (0.0.1 → 0.1.0)
 - **Major:** Breaking changes (0.0.1 → 1.0.0)
 
-No complex GitHub Actions, just simple changesets + manual releases.
+## Setup Requirements
+
+1. **NPM_TOKEN** secret must be configured in GitHub repository settings
+2. Changeset validation runs automatically on PRs to `develop`
+
+## Troubleshooting
+
+- If the sync PR fails, you can manually create a PR from `main` to `develop`
+- Check GitHub Actions logs for detailed error information
+- Ensure all changesets are properly formatted before merging to `develop`

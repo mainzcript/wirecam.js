@@ -18,8 +18,8 @@ Thank you for your interest in contributing!
 ## Development
 
 - **Changesets for package changes** - helps with versioning and changelogs
-- **Simple workflow** - PR to main, no complex branch protection
-- **Manual releases** by maintainers when ready
+- **Automated release workflow** - PR to develop, then develop to main triggers release
+- **Changeset validation** - automatically checked on PRs to develop
 
 ## Code Style
 
