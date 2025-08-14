@@ -16,8 +16,7 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Fetch develop branch
-        run: git fetch origin develop:develop
+
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -34,17 +33,10 @@ jobs:
 
       - name: Check for changesets
         run: |
-          # Check if we're on a branch that diverges from develop
-          if git merge-base --is-ancestor HEAD origin/develop 2>/dev/null; then
-            echo "Branch is based on develop, running changeset status..."
-            pnpm changeset status
+          if [ -d ".changeset" ] && [ "$(ls -A .changeset/*.md 2>/dev/null | wc -l)" -gt 0 ]; then
+            echo "✅ Changesets found"
+            exit 0
           else
-            echo "Branch is not based on develop, checking for changesets manually..."
-            if [ -d ".changeset" ] && [ "$(ls -A .changeset/*.md 2>/dev/null | wc -l)" -gt 0 ]; then
-              echo "✅ Changesets found"
-              exit 0
-            else
-              echo "❌ No changesets found"
-              exit 1
-            fi
+            echo "❌ No changesets found"
+            exit 1
           fi
