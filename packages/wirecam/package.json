@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@types/stats.js": "^0.17.4",
-    "@types/three": "^0.157.0"
+    "@types/three": "^0.157.2"
   },
   "publishConfig": {
     "access": "public"
