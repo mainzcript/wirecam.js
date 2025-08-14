@@ -333,7 +333,7 @@ The Inspector provides:
 
 ## Development
 
-This is a pnpm monorepo. To get started:
+This is a pnpm monorepo with automated releases. To get started:
 
 ```bash
 # Install dependencies
@@ -353,6 +353,9 @@ pnpm test
 
 # Start development server (Svelte example)
 cd examples/svelte && pnpm dev
+
+# Add changeset for package changes
+pnpm changeset add
 ```
 
 ### Project Structure
@@ -399,7 +402,11 @@ Tracks the position and size of HTML elements in the viewport and calculates ROI
 
 ## Contributing
 
-Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on how to contribute, including how to fork, create a feature branch, and submit a Pull Request. If you change any code in `packages/`, you must add a changeset. All details for contributors are in that file.
+Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on how to contribute, including how to fork, create a feature branch, and submit a Pull Request.
+
+**Important:** If you change any code in `packages/`, you must add a changeset using `pnpm changeset add`. This is required for our automated release workflow.
+
+For release information, see [RELEASING.md](./RELEASING.md).
 
 ## License
 
