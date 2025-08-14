@@ -1,5 +1,5 @@
 {
-	"name": "svelte",
+	"name": "wirecam-svelte-example",
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
