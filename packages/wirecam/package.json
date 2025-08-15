@@ -15,7 +15,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "peerDependencies": {
-    "three": "^0.157.0"
+    "three": ">=0.157.0"
   },
   "dependencies": {
     "stats.js": "^0.17.0",
