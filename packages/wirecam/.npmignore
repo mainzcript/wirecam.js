@@ -1,0 +1,28 @@
+# Source files
+src/
+tsconfig.json
+tsup.config.ts
+
+# Development files
+.eslintrc.js
+node_modules/
+
+# Build artifacts (except dist)
+*.tsbuildinfo
+
+# Test files
+*.test.ts
+*.spec.ts
+vitest.config.ts
+
+# Documentation
+README.md
+CHANGELOG.md
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
