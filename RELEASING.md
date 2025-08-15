@@ -30,7 +30,10 @@ This project uses a simplified release process with manual version management an
 
 2. **Create PR** from `develop` to `main`
 3. **Merge to main** - This triggers the automated NPM publishing process:
-   - Publish all changed packages to npm
+   - **Build all packages** (`pnpm build`)
+   - **Verify build output** (check dist files exist)
+   - **Test package locally** (`npm pack`)
+   - **Publish all changed packages to npm**
    - No automatic version bumping (done manually)
    - No sync back to develop (not needed)
 
@@ -40,6 +43,28 @@ This project uses a simplified release process with manual version management an
 - **Apply changesets:** `pnpm version`
 - **Check changeset status:** `pnpm changeset status`
 - **Preview version changes:** `pnpm changeset version --dry-run`
+
+## Local Testing
+
+Before releasing, test the package locally:
+
+```bash
+# Build and test the package
+cd packages/wirecam
+npm run build
+npm run test
+
+# Create a local package for testing
+npm pack
+
+# Test installation in a new directory
+mkdir test-install
+cd test-install
+npm init -y
+npm install ../wirecam-0.1.3.tgz
+```
+
+This ensures the package works correctly before publishing.
 
 ## Version Bumping
 

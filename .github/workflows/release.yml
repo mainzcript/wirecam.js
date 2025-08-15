@@ -33,6 +33,29 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Build packages
+        run: pnpm build
+
+      - name: Verify build output
+        run: |
+          if [ ! -d "packages/wirecam/dist" ]; then
+            echo "❌ Build failed: dist directory not found"
+            exit 1
+          fi
+          if [ ! -f "packages/wirecam/dist/index.js" ]; then
+            echo "❌ Build failed: index.js not found"
+            exit 1
+          fi
+          if [ ! -f "packages/wirecam/dist/index.mjs" ]; then
+            echo "❌ Build failed: index.mjs not found"
+            exit 1
+          fi
+          if [ ! -f "packages/wirecam/dist/index.d.ts" ]; then
+            echo "❌ Build failed: index.d.ts not found"
+            exit 1
+          fi
+          echo "✅ Build verification passed"
+
       - name: Setup Git
         run: |
           git config user.name "github-actions[bot]"
@@ -42,6 +65,12 @@ jobs:
         run: |
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
           npm config set access public
+
+      - name: Test package locally
+        run: |
+          cd packages/wirecam
+          npm pack
+          echo "✅ Package test passed"
 
       - name: Publish to NPM
         id: publish

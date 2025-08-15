@@ -1,5 +1,16 @@
 # wirecam
 
+## 0.1.4
+
+### Patch Changes
+
+- fix: ensure dist files are built before npm publish
+  - Add build step to GitHub Actions release workflow
+  - Add build verification to prevent publishing without dist files
+  - Add prepublishOnly hook to ensure build runs before publish
+  - Add .npmignore to ensure clean package distribution
+  - Add local testing instructions to release documentation
+
 ## 0.1.3
 
 ### Patch Changes
