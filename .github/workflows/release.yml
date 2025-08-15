@@ -43,30 +43,9 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
           npm config set access public
 
-      - name: Version and Publish
-        id: release
-        run: pnpm release
+      - name: Publish to NPM
+        id: publish
+        run: pnpm publish --no-git-checks
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Sync main to develop
-        if: steps.release.outcome == 'success'
-        run: |
-          # Fetch all branches
-          git fetch origin
-
-          # Checkout develop branch
-          git checkout develop
-
-          # Try to merge main into develop, use strategy if conflicts
-          if ! git merge origin/main --no-edit; then
-            echo "Merge conflict detected, using strategy to resolve"
-            git merge --abort
-            git merge origin/main --no-edit -X theirs
-          fi
-
-          # Push the updated develop branch
-          git push origin develop
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

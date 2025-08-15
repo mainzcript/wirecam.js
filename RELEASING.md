@@ -1,8 +1,8 @@
 # Release Guide
 
-## Automated Release Workflow
+## LEAN Release Workflow
 
-This project uses an automated release process with Changesets and GitHub Actions for Git-Flow (develop → main → develop).
+This project uses a simplified release process with manual version management and automated NPM publishing.
 
 ## Development Workflow
 
@@ -20,16 +20,24 @@ This project uses an automated release process with Changesets and GitHub Action
 
 ## Release Process
 
-1. **When ready to release:** Create PR from `develop` to `main`
-2. **Merge to main** - This triggers the automated release process:
-   - Version bump & changelog generation based on consumed `.changeset` files
-   - Git tags for all affected packages
+1. **Manual version bump in develop:**
+
+   ```bash
+   pnpm version
+   ```
+
+   This applies changesets, bumps versions, and updates changelogs.
+
+2. **Create PR** from `develop` to `main`
+3. **Merge to main** - This triggers the automated NPM publishing process:
    - Publish all changed packages to npm
-   - Automatic sync PR from `main` back to `develop`
+   - No automatic version bumping (done manually)
+   - No sync back to develop (not needed)
 
 ## Manual Changeset Management
 
 - **Add changeset:** `pnpm changeset add`
+- **Apply changesets:** `pnpm version`
 - **Check changeset status:** `pnpm changeset status`
 - **Preview version changes:** `pnpm changeset version --dry-run`
 
@@ -44,8 +52,9 @@ This project uses an automated release process with Changesets and GitHub Action
 1. **NPM_TOKEN** secret must be configured in GitHub repository settings
 2. Changeset validation runs automatically on PRs to `develop`
 
-## Troubleshooting
+## Benefits of LEAN Workflow
 
-- If the sync PR fails, you can manually create a PR from `main` to `develop`
-- Check GitHub Actions logs for detailed error information
-- Ensure all changesets are properly formatted before merging to `develop`
+- **Simpler:** No complex sync operations
+- **More control:** Manual version management in develop
+- **Reliable:** Fewer moving parts in CI pipeline
+- **Transparent:** Clear separation between versioning and publishing

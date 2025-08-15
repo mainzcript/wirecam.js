@@ -18,7 +18,7 @@ Thank you for your interest in contributing!
 ## Development
 
 - **Changesets for package changes** - helps with versioning and changelogs
-- **Automated release workflow** - PR to develop, then develop to main triggers release
+- **LEAN release workflow** - manual version bump in develop, then PR to main triggers NPM publish
 - **Changeset validation** - automatically checked on PRs to develop
 
 ## Code Style
