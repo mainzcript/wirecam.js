@@ -1,26 +1,26 @@
 # wirecam
 
+## 0.1.2
+
+### Patch Changes
+
+- 18d1d7b: fix: improve Three.js compatibility and fix development dependencies
+  - Updated Three.js peer dependency from `^0.157.0` to `>=0.157.0` for better version compatibility
+  - Added missing prettier-plugin-svelte dependency to resolve build issues
+  - Improved development workflow stability and dependency management
+  - Resolves installation issues with newer Three.js versions (0.178.0+)
+
 ## 0.1.1
 
 ### Patch Changes
 
-- 53b7ddd: fix: update Three.js peer dependency to support newer versions
-  - Changed peer dependency from `^0.157.0` to `>=0.157.0`
-  - Allows compatibility with newer Three.js versions (e.g., 0.178.0)
-  - Resolves ERESOLVE errors when installing with newer Three.js versions
-  - Users no longer need to use `--legacy-peer-deps` flag
-
-- 798f787: feat: implement scroll-driven 3D camera controller with keyframe system
-- 798f787: fix: resolve security vulnerabilities in dependencies
-  - Fix esbuild development server vulnerability (moderate)
-  - Fix tsup DOM clobbering vulnerabilities (low)
-  - Update all dependencies to latest versions
-  - Maintain compatibility with existing APIs
-
-- 798f787: nothing has changed - just a changeset for testing purposes
+- b675738: fix: update dependencies and resolve security vulnerabilities
+  - Updated outdated dependencies to latest versions
+  - Fixed security vulnerabilities in development dependencies
+  - Improved overall package stability
 
 ## 0.1.0
 
 ### Minor Changes
 
-- 6df24a8: feat: implement scroll-driven 3D camera controller with keyframe system
+- 798f787: feat: implement scroll-driven 3D camera controller with keyframe system
