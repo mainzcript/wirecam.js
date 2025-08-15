@@ -45,7 +45,9 @@ jobs:
 
       - name: Publish to NPM
         id: publish
-        run: pnpm publish --no-git-checks
+        run: |
+          cd packages/wirecam
+          npm publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
