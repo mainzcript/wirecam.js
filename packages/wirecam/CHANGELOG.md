@@ -1,5 +1,14 @@
 # wirecam
 
+## 0.1.3
+
+### Patch Changes
+
+- test: workflow validation
+  - Test changeset to validate LEAN release workflow
+  - No functional changes, only testing CI pipeline
+  - Verifying manual version bump and automated publishing process
+
 ## 0.1.2
 
 ### Patch Changes
