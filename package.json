@@ -10,6 +10,7 @@
     "build": "pnpm --recursive run build",
     "lint": "pnpm --recursive run lint",
     "test": "pnpm --recursive run test",
+    "rtc": "pnpm lint && pnpm test && pnpm build",
     "version": "changeset version",
     "publish": "changeset publish"
   },
