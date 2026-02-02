@@ -1,5 +1,12 @@
 # wirecam
 
+## 0.1.5
+
+### Patch Changes
+
+- f8a391f: Update all dependencies including ESLint 9, Vitest 4, and tooling
+- f8a391f: Migrate to ESLint 9 with flat config
+
 ## 0.1.4
 
 ### Patch Changes

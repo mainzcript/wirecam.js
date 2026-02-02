@@ -2,7 +2,7 @@
 
 ## LEAN Release Workflow
 
-This project uses a simplified release process with manual version management and automated NPM publishing.
+This project uses a simplified release process with manual version management and **manual** NPM publishing.
 
 ## Development Workflow
 
@@ -29,13 +29,32 @@ This project uses a simplified release process with manual version management an
    This applies changesets, bumps versions, and updates changelogs.
 
 2. **Create PR** from `develop` to `main`
-3. **Merge to main** - This triggers the automated NPM publishing process:
-   - **Build all packages** (`pnpm build`)
-   - **Verify build output** (check dist files exist)
-   - **Test package locally** (`npm pack`)
-   - **Publish all changed packages to npm**
-   - No automatic version bumping (done manually)
-   - No sync back to develop (not needed)
+3. **Merge to main** - CI runs build/test/lint only (no publish)
+4. **Publish manually** from your local machine when ready:
+
+   ```bash
+   pnpm install
+   pnpm lint
+   pnpm test
+   pnpm build
+   pnpm --filter wirecam publish --access public
+   ```
+
+   No automatic version bumping (done manually) and no sync back to develop.
+
+5. **Create Git tag and GitHub Release:**
+
+   ```bash
+   # Create and push tag
+   git tag v<VERSION>
+   git push origin v<VERSION>
+   ```
+
+   Then create a GitHub Release:
+   - Go to https://github.com/mainzcript/wirecam.js/releases/new
+   - Select the tag you just created
+   - Copy release notes from CHANGELOG.md
+   - Publish release
 
 ## Manual Changeset Management
 
@@ -61,7 +80,7 @@ npm pack
 mkdir test-install
 cd test-install
 npm init -y
-npm install ../wirecam-0.1.3.tgz
+npm install ../wirecam-<VERSION>.tgz
 ```
 
 This ensures the package works correctly before publishing.
@@ -74,8 +93,7 @@ This ensures the package works correctly before publishing.
 
 ## Setup Requirements
 
-1. **NPM_TOKEN** secret must be configured in GitHub repository settings
-2. Changeset validation runs automatically on PRs to `develop`
+1. Changeset validation runs automatically on PRs to `develop`
 
 ## Benefits of LEAN Workflow
 
