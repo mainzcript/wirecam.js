@@ -42,6 +42,20 @@ This project uses a simplified release process with manual version management an
 
    No automatic version bumping (done manually) and no sync back to develop.
 
+5. **Create Git tag and GitHub Release:**
+
+   ```bash
+   # Create and push tag
+   git tag v<VERSION>
+   git push origin v<VERSION>
+   ```
+
+   Then create a GitHub Release:
+   - Go to https://github.com/mainzcript/wirecam.js/releases/new
+   - Select the tag you just created
+   - Copy release notes from CHANGELOG.md
+   - Publish release
+
 ## Manual Changeset Management
 
 - **Add changeset:** `pnpm changeset add`
@@ -66,7 +80,7 @@ npm pack
 mkdir test-install
 cd test-install
 npm init -y
-npm install ../wirecam-0.1.3.tgz
+npm install ../wirecam-<VERSION>.tgz
 ```
 
 This ensures the package works correctly before publishing.
